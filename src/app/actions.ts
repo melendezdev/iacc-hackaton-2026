@@ -1,40 +1,44 @@
 'use server';
 
-import { db, usuarios, pacientes, intervenciones } from '@/db';
+import { db, user, pacientes, intervenciones } from '@/db';
 import { desc, eq } from 'drizzle-orm';
 
-// Función para inicializar datos semilla si la base de datos está vacía.
-// Esto permite que el prototipo funcione inmediatamente en la Hackathon.
+// Inicializar datos semilla adaptados a las tablas de Better Auth
 export async function inicializarDatosSemilla() {
   try {
-    // 1. Verificar Terapeutas (Usuarios)
-    const terapeutasExistentes = await db.select().from(usuarios).limit(1);
-    let terapeutasInsertados = [];
+    // 1. Verificar Terapeutas (en tabla user de Better Auth)
+    const terapeutasExistentes = await db.select().from(user).limit(1);
     if (terapeutasExistentes.length === 0) {
-      terapeutasInsertados = await db
-        .insert(usuarios)
-        .values([
-          {
-            id: 'terapeuta-1',
-            nombre: 'Psi. Alejandro Meléndez',
-            email: 'alejandro.melendez@talitakum.cl',
-            rol: 'terapeuta',
-          },
-          {
-            id: 'terapeuta-2',
-            nombre: 'Trabajadora Social Constanza Ruiz',
-            email: 'constanza.ruiz@talitakum.cl',
-            rol: 'terapeuta',
-          },
-          {
-            id: 'terapeuta-3',
-            nombre: 'Dr. Daniel Silva (Psiquiatra)',
-            email: 'daniel.silva@talitakum.cl',
-            rol: 'admin',
-          },
-        ])
-        .returning();
-      console.log('Se insertaron terapeutas semilla.');
+      await db.insert(user).values([
+        {
+          id: 'terapeuta-1',
+          name: 'Psi. Alejandro Meléndez',
+          email: 'alejandro.melendez@talitakum.cl',
+          emailVerified: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          role: 'terapeuta',
+        },
+        {
+          id: 'terapeuta-2',
+          name: 'Trabajadora Social Constanza Ruiz',
+          email: 'constanza.ruiz@talitakum.cl',
+          emailVerified: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          role: 'terapeuta',
+        },
+        {
+          id: 'terapeuta-3',
+          name: 'Dr. Daniel Silva (Psiquiatra)',
+          email: 'daniel.silva@talitakum.cl',
+          emailVerified: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          role: 'admin',
+        },
+      ]);
+      console.log('Se insertaron terapeutas en la tabla user.');
     }
 
     // 2. Verificar Pacientes
@@ -84,7 +88,6 @@ export async function obtenerPacientes() {
     return await db.select().from(pacientes);
   } catch (error) {
     console.error('Error al obtener pacientes:', error);
-    // Retornar fallback para asegurar que la UI no se rompa si la BD remota tiene problemas
     return [
       { id: 'paciente-1', nombre: 'Juan Carlos Pérez (Local Fallback)' },
       { id: 'paciente-2', nombre: 'María José Gajardo (Local Fallback)' },
@@ -93,16 +96,16 @@ export async function obtenerPacientes() {
   }
 }
 
-// Obtener lista de terapeutas (usuarios)
+// Obtener lista de terapeutas (usuarios de la tabla user)
 export async function obtenerTerapeutas() {
   await inicializarDatosSemilla();
   try {
-    return await db.select().from(usuarios);
+    return await db.select().from(user);
   } catch (error) {
     console.error('Error al obtener terapeutas:', error);
     return [
-      { id: 'terapeuta-1', nombre: 'Psi. Alejandro Meléndez (Local Fallback)' },
-      { id: 'terapeuta-2', nombre: 'Trabajadora Social Constanza Ruiz (Local Fallback)' }
+      { id: 'terapeuta-1', name: 'Psi. Alejandro Meléndez (Local Fallback)' },
+      { id: 'terapeuta-2', name: 'Trabajadora Social Constanza Ruiz (Local Fallback)' }
     ];
   }
 }
@@ -190,7 +193,6 @@ export async function sincronizarIntervencionesLote(
 // Obtener historial de intervenciones
 export async function obtenerIntervenciones() {
   try {
-    // Realizamos un join manual o select para recuperar las intervenciones ordenadas con nombres
     const registros = await db
       .select({
         id: intervenciones.id,
@@ -203,11 +205,11 @@ export async function obtenerIntervenciones() {
         validadoPorTerapeuta: intervenciones.validadoPorTerapeuta,
         audioUrl: intervenciones.audioUrl,
         estadoSincronizacion: intervenciones.estadoSincronizacion,
-        terapeutaNombre: usuarios.nombre,
+        terapeutaNombre: user.name,
         pacienteNombre: pacientes.nombre,
       })
       .from(intervenciones)
-      .leftJoin(usuarios, eq(intervenciones.terapeutaId, usuarios.id))
+      .leftJoin(user, eq(intervenciones.terapeutaId, user.id))
       .leftJoin(pacientes, eq(intervenciones.pacienteId, pacientes.id))
       .orderBy(desc(intervenciones.fechaIntervencion));
 

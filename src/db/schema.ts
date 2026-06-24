@@ -1,35 +1,76 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
-// 1. Tabla de Usuarios (Terapeutas)
-export const usuarios = sqliteTable('usuarios', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
-  nombre: text('nombre').notNull(),
+// ==========================================
+// TABLAS EXIGIDAS POR BETTER AUTH
+// ==========================================
+
+export const user = sqliteTable('user', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
   email: text('email').notNull().unique(),
-  rol: text('rol').notNull().default('terapeuta'),
-  fechaCreacion: text('fecha_creacion')
-    .notNull()
-    .default(sql`(CURRENT_TIMESTAMP)`),
+  emailVerified: integer('email_verified', { mode: 'boolean' }).notNull(),
+  image: text('image'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  // Rol personalizado para control de acceso en la clínica
+  role: text('role').notNull().default('terapeuta'), // 'terapeuta' | 'admin'
 });
 
-// 2. Tabla de Pacientes
+export const session = sqliteTable('session', {
+  id: text('id').primaryKey(),
+  expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+  token: text('token').notNull().unique(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  ipAddress: text('ip_address'),
+  userAgent: text('user_agent'),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+});
+
+export const account = sqliteTable('account', {
+  id: text('id').primaryKey(),
+  accountId: text('account_id').notNull(),
+  providerId: text('provider_id').notNull(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  accessToken: text('access_token'),
+  refreshToken: text('refresh_token'),
+  idToken: text('id_token'),
+  expiresAt: integer('expires_at', { mode: 'timestamp' }),
+  password: text('password'),
+});
+
+export const verification = sqliteTable('verification', {
+  id: text('id').primaryKey(),
+  identifier: text('identifier').notNull(),
+  value: text('value').notNull(),
+  expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+});
+
+// ==========================================
+// TABLAS DEL DOMINIO CLÍNICO
+// ==========================================
+
 export const pacientes = sqliteTable('pacientes', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   nombre: text('nombre').notNull(),
-  rut: text('rut').unique(), // Cédula o identificador nacional
+  rut: text('rut').unique(),
   fechaNacimiento: text('fecha_nacimiento'),
-  estado: text('estado').notNull().default('activo'), // activo, egresado, etc.
+  estado: text('estado').notNull().default('activo'),
   fechaCreacion: text('fecha_creacion')
     .notNull()
     .default(sql`(CURRENT_TIMESTAMP)`),
 });
 
-// 3. Tabla de Intervenciones
 export const intervenciones = sqliteTable('intervenciones', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   terapeutaId: text('terapeuta_id')
     .notNull()
-    .references(() => usuarios.id, { onDelete: 'cascade' }),
+    .references(() => user.id, { onDelete: 'cascade' }),
   pacienteId: text('paciente_id')
     .notNull()
     .references(() => pacientes.id, { onDelete: 'cascade' }),
@@ -37,25 +78,30 @@ export const intervenciones = sqliteTable('intervenciones', {
     .notNull()
     .default(sql`(CURRENT_TIMESTAMP)`),
   
-  // Los 5 campos obligatorios del flujo estructurado
+  // Los 5 campos obligatorios
   objetivo: text('objetivo').notNull(),
   desarrollo: text('desarrollo').notNull(),
   acuerdos: text('acuerdos').notNull(),
   accionesSeguir: text('acciones_seguir').notNull(),
   observaciones: text('observaciones').notNull(),
   
-  // Regla de Oro: Confirmación/Validación por terapeuta
+  // Regla de Oro
   validadoPorTerapeuta: integer('validado_por_terapeuta', { mode: 'boolean' })
     .notNull()
     .default(false),
   
-  // Campos de apoyo offline y multimedia
-  audioUrl: text('audio_url'), // Almacenamiento en la nube (ej. S3/R2)
+  audioUrl: text('audio_url'),
   estadoSincronizacion: text('estado_sincronizacion')
     .notNull()
-    .default('pendiente'), // 'sincronizado' | 'pendiente' | 'offline'
+    .default('pendiente'),
   
   fechaCreacion: text('fecha_creacion')
     .notNull()
     .default(sql`(CURRENT_TIMESTAMP)`),
 });
+export type UserSchemaType = typeof user.$inferSelect;
+export type PacienteSchemaType = typeof pacientes.$inferSelect;
+export type IntervencionSchemaType = typeof intervenciones.$inferSelect;
+export type SessionSchemaType = typeof session.$inferSelect;
+export type AccountSchemaType = typeof account.$inferSelect;
+export type VerificationSchemaType = typeof verification.$inferSelect;

@@ -8,6 +8,13 @@
       "when": 1782264616537,
       "tag": "0000_curly_wendigo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1782265983224,
+      "tag": "0001_closed_namorita",
+      "breakpoints": true
     }
   ]
 }

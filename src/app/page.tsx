@@ -3,11 +3,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { VoiceRecorder } from '@/components/VoiceRecorder';
 import { ValidationForm } from '@/components/ValidationForm';
-import { Login, LoggedInUser } from '@/components/Login';
+import { Login } from '@/components/Login';
+
+export interface LoggedInUser {
+  id: string;
+  name: string;
+  email: string;
+  role: 'terapeuta' | 'admin';
+}
 import { Dashboard } from '@/components/Dashboard';
 import { StructuredIntervention } from '@/lib/transcription';
 import { Wifi, WifiOff, RefreshCw, CheckCircle2, LogOut, LayoutDashboard, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { authClient } from '@/lib/auth-client';
 import {
   obtenerPacientes,
   obtenerTerapeutas,
@@ -89,7 +97,7 @@ export default function AppHome() {
         const localesMapeados = locales.map((loc) => ({
           ...loc,
           pacienteNombre: pacientesData.find((p) => p.id === loc.pacienteId)?.nombre || 'Paciente Desconocido',
-          terapeutaNombre: terapeutasData.find((t) => t.id === loc.terapeutaId)?.nombre || 'Terapeuta Desconocido',
+          terapeutaNombre: terapeutasData.find((t) => t.id === loc.terapeutaId)?.name || 'Terapeuta Desconocido',
         }));
 
         setInterventionsList([...localesMapeados, ...intervencionesDb]);
@@ -107,7 +115,7 @@ export default function AppHome() {
         const localesMapeados = locales.map((loc) => ({
           ...loc,
           pacienteNombre: pacientesCache.find((p) => p.id === loc.pacienteId)?.nombre || 'Paciente Local',
-          terapeutaNombre: terapeutasCache.find((t) => t.id === loc.terapeutaId)?.nombre || 'Terapeuta Local',
+          terapeutaNombre: terapeutasCache.find((t) => t.id === loc.terapeutaId)?.name || 'Terapeuta Local',
         }));
 
         setInterventionsList(localesMapeados);
@@ -207,7 +215,8 @@ export default function AppHome() {
   };
 
   // Cierre de sesión
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await authClient.signOut();
     setUser(null);
     setCurrentView('record');
     setPrefilledData(null);
@@ -236,14 +245,14 @@ export default function AppHome() {
             <div>
               <h1 className="text-sm font-extrabold tracking-tight">Talita Kum</h1>
               <p className="text-[8px] uppercase font-bold text-muted-foreground tracking-wider">
-                {user.rol === 'admin' ? 'Administración' : 'Terapeuta'}
+                {user.role === 'admin' ? 'Administración' : 'Terapeuta'}
               </p>
             </div>
           </div>
 
           {/* Menú de herramientas y logout */}
           <div className="flex items-center gap-2">
-            {user.rol === 'admin' && (
+            {user.role === 'admin' && (
               <>
                 {currentView === 'dashboard' ? (
                   <Button
@@ -287,7 +296,7 @@ export default function AppHome() {
         
         {/* Perfil de Usuario Logueado (Mini banner) */}
         <div className="flex justify-between items-center text-[10px] text-muted-foreground bg-muted/30 border border-border p-2.5 rounded-xl">
-          <span>Identificado como: <strong>{user.nombre}</strong></span>
+          <span>Identificado como: <strong>{user.name}</strong></span>
           <span className="flex items-center gap-1">
             {isOffline ? (
               <span className="w-2 h-2 rounded-full bg-destructive"></span>
@@ -344,7 +353,7 @@ export default function AppHome() {
             </div>
           )}
 
-          {currentView === 'dashboard' && user.rol === 'admin' && (
+          {currentView === 'dashboard' && user.role === 'admin' && (
             /* PASO 3: DASHBOARD ADMINISTRATIVO DE KPIS */
             <div className="w-full animate-in fade-in duration-300">
               <Dashboard
@@ -360,7 +369,7 @@ export default function AppHome() {
           <section className="flex flex-col gap-4 mt-4 border-t border-border pt-6 animate-in fade-in duration-300">
             <div className="flex items-center justify-between pb-1">
               <h3 className="text-xs font-black uppercase tracking-wider text-muted-foreground">
-                {user.rol === 'admin' 
+                {user.role === 'admin' 
                   ? 'Seguimiento General de Pacientes' 
                   : 'Mis Intervenciones Recientes'}
               </h3>
