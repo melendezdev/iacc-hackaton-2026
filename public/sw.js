@@ -42,6 +42,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Skip unsupported schemes (like chrome-extension://, extension://, etc.)
+  if (!event.request.url.startsWith('http://') && !event.request.url.startsWith('https://')) {
+    return;
+  }
+
+
   // Handle navigate request (HTML pages) -> Network first, fallback to cache
   if (event.request.mode === 'navigate') {
     event.respondWith(
