@@ -3,8 +3,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { VoiceRecorder } from '@/components/VoiceRecorder';
 import { ValidationForm } from '@/components/ValidationForm';
+import { Login, LoggedInUser } from '@/components/Login';
+import { Dashboard } from '@/components/Dashboard';
 import { StructuredIntervention } from '@/lib/transcription';
-import { Wifi, WifiOff, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Wifi, WifiOff, RefreshCw, CheckCircle2, LogOut, LayoutDashboard, Mic } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   obtenerPacientes,
   obtenerTerapeutas,
@@ -19,16 +22,19 @@ import {
 } from '@/lib/indexedDb';
 
 export default function AppHome() {
-  // Estado de flujo de pantallas
-  const [currentStep, setCurrentStep] = useState<'record' | 'validate'>('record');
+  // Estado de Autenticación
+  const [user, setUser] = useState<LoggedInUser | null>(null);
 
-  // Datos para el formulario
+  // Estado de flujo de vistas
+  const [currentView, setCurrentView] = useState<'record' | 'validate' | 'dashboard'>('record');
+
+  // Datos de trabajo
   const [patients, setPatients] = useState<any[]>([]);
   const [therapists, setTherapists] = useState<any[]>([]);
   const [prefilledData, setPrefilledData] = useState<StructuredIntervention | null>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
 
-  // Conectividad y sincronización
+  // Conectividad y Sincronización
   const [isOffline, setIsOffline] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [pendingSyncCount, setPendingSyncCount] = useState(0);
@@ -60,12 +66,11 @@ export default function AppHome() {
     };
   }, []);
 
-  // 2. Cargar pacientes, terapeutas e historial (Online con fallback Offline)
+  // 2. Cargar catálogos e historial médico
   const loadCatalogsAndHistory = useCallback(async (networkOfflineState: boolean) => {
     setLoading(true);
     try {
       if (!networkOfflineState) {
-        // Modo Online: Cargar de base de datos Turso
         const [pacientesData, terapeutasData, intervencionesDb] = await Promise.all([
           obtenerPacientes(),
           obtenerTerapeutas(),
@@ -75,11 +80,9 @@ export default function AppHome() {
         setPatients(pacientesData);
         setTherapists(terapeutasData);
 
-        // Guardar catálogos en caché para uso offline
         await cachearCatalogo('pacientes', pacientesData);
         await cachearCatalogo('usuarios', terapeutasData);
 
-        // Combinar historial con la cola de sincronización de IndexedDB
         const locales = await obtenerIntervencionesOffline();
         setPendingSyncCount(locales.length);
 
@@ -91,7 +94,6 @@ export default function AppHome() {
 
         setInterventionsList([...localesMapeados, ...intervencionesDb]);
       } else {
-        // Modo Offline: Recuperar de IndexedDB local
         const [pacientesCache, terapeutasCache, locales] = await Promise.all([
           obtenerCatalogoCacheado('pacientes'),
           obtenerCatalogoCacheado('usuarios'),
@@ -111,37 +113,34 @@ export default function AppHome() {
         setInterventionsList(localesMapeados);
       }
     } catch (error) {
-      console.error('Error cargando catálogos/historial:', error);
-      setStatusMessage('Usando datos de respaldo almacenados en el teléfono.');
+      console.error('Error cargando historial:', error);
+      setStatusMessage('Usando datos locales almacenados de contingencia.');
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Recargar al cambiar de estado de red
   useEffect(() => {
     loadCatalogsAndHistory(isOffline);
   }, [isOffline, loadCatalogsAndHistory]);
 
-  // 3. Sincronización de registros pendientes acumulados sin conexión
+  // 3. Sincronización automática de registros IndexedDB
   const triggerSync = async () => {
     if (navigator.onLine) {
       const locales = await obtenerIntervencionesOffline();
       if (locales.length > 0) {
         setSyncing(true);
-        setStatusMessage(`Sincronizando ${locales.length} intervenciones registradas offline...`);
+        setStatusMessage(`Sincronizando ${locales.length} registros offline...`);
 
         try {
           const res = await sincronizarIntervencionesLote(locales);
           if (res.success) {
-            // Eliminar de IndexedDB local
             for (const item of locales) {
               await eliminarIntervencionOffline(item.id);
             }
-            setStatusMessage('✓ Registros sincronizados en la nube.');
+            setStatusMessage('✓ Datos sincronizados exitosamente.');
             setPendingSyncCount(0);
 
-            // Actualizar historial
             const intervencionesDb = await obtenerIntervenciones();
             const localesRestantes = await obtenerIntervencionesOffline();
             setInterventionsList([...localesRestantes, ...intervencionesDb]);
@@ -150,7 +149,7 @@ export default function AppHome() {
           }
         } catch (error: any) {
           console.error('Fallo en sincronización:', error);
-          setStatusMessage('⚠️ Sincronización en cola. Se reintentará con mejor señal.');
+          setStatusMessage('⚠️ Sincronización suspendida en segundo plano.');
         } finally {
           setSyncing(false);
           setTimeout(() => setStatusMessage(''), 4000);
@@ -165,7 +164,7 @@ export default function AppHome() {
     }
   }, [isOffline]);
 
-  // 4. Manejo del ciclo de grabación
+  // 4. Captura de grabaciones
   const handleProcessingStart = () => {
     setStatusMessage('IA transcribiendo y estructurando audio...');
   };
@@ -177,39 +176,52 @@ export default function AppHome() {
   ) => {
     setPrefilledData(result);
     setAudioBlob(blob);
-    // Transición fluida al paso de validación
-    setCurrentStep('validate');
+    setCurrentView('validate');
     setStatusMessage('');
   };
 
   const handleProcessingError = (error: string) => {
-    setStatusMessage(`Error del micrófono: ${error}`);
+    setStatusMessage(`Error: ${error}`);
     setTimeout(() => setStatusMessage(''), 5000);
   };
 
   // 5. Finalizar validación y guardar
   const handleSaveComplete = (savedRecord: any, isOfflineSaved: boolean) => {
-    // Activar pantalla de éxito animada
     setShowSuccessOverlay(true);
     
     if (isOfflineSaved) {
-      setStatusMessage('✓ Guardado localmente. Se subirá automáticamente al recuperar internet.');
+      setStatusMessage('✓ Guardado en IndexedDB. Se subirá automáticamente al recuperar internet.');
     } else {
-      setStatusMessage('✓ Registro clínico subido y sincronizado en la nube.');
+      setStatusMessage('✓ Registro clínico subido a la base de datos Turso.');
     }
 
-    // Recargar historial
     loadCatalogsAndHistory(isOffline);
 
-    // Ocultar mensaje y retornar al grabador después de 2 segundos
     setTimeout(() => {
       setShowSuccessOverlay(false);
       setPrefilledData(null);
       setAudioBlob(null);
-      setCurrentStep('record');
+      setCurrentView('record');
       setStatusMessage('');
     }, 2200);
   };
+
+  // Cierre de sesión
+  const handleLogout = () => {
+    setUser(null);
+    setCurrentView('record');
+    setPrefilledData(null);
+    setAudioBlob(null);
+  };
+
+  // Si no está logueado, mostrar la pantalla de Login
+  if (!user) {
+    return (
+      <div className="flex-1 bg-background text-foreground flex items-center justify-center min-h-screen px-4">
+        <Login onLoginSuccess={(u) => setUser(u)} />
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 bg-background text-foreground flex flex-col min-h-screen transition-colors duration-200">
@@ -223,29 +235,49 @@ export default function AppHome() {
             </div>
             <div>
               <h1 className="text-sm font-extrabold tracking-tight">Talita Kum</h1>
-              <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider">
-                Registro Inteligente
+              <p className="text-[8px] uppercase font-bold text-muted-foreground tracking-wider">
+                {user.rol === 'admin' ? 'Administración' : 'Terapeuta'}
               </p>
             </div>
           </div>
 
-          {/* Estado de conexión */}
-          <div className="flex items-center gap-1.5">
-            {syncing && <RefreshCw className="w-3.5 h-3.5 animate-spin text-primary" />}
-            {pendingSyncCount > 0 && (
-              <span className="rounded-full bg-amber-500 px-2 py-0.5 text-[9px] font-black text-white">
-                {pendingSyncCount} cola
-              </span>
+          {/* Menú de herramientas y logout */}
+          <div className="flex items-center gap-2">
+            {user.rol === 'admin' && (
+              <>
+                {currentView === 'dashboard' ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setCurrentView('record')}
+                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs"
+                    title="Ir a Grabación"
+                  >
+                    <Mic className="w-4 h-4 mr-1" /> Dictar
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setCurrentView('dashboard')}
+                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-indigo-600 dark:text-indigo-400 font-bold"
+                    title="Ir a Dashboard"
+                  >
+                    <LayoutDashboard className="w-4 h-4 mr-1" /> KPIs
+                  </Button>
+                )}
+              </>
             )}
-            {isOffline ? (
-              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-destructive bg-destructive/10 px-2.5 py-0.5 rounded-full border border-destructive/20">
-                <WifiOff className="w-2.5 h-2.5" /> Offline
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-600 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-                <Wifi className="w-2.5 h-2.5 animate-pulse" /> Online
-              </span>
-            )}
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogout}
+              className="w-8 h-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
+              title="Cerrar Sesión"
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </header>
@@ -253,9 +285,22 @@ export default function AppHome() {
       {/* Cuerpo Principal */}
       <main className="flex-1 max-w-lg w-full mx-auto px-4 py-6 flex flex-col gap-6">
         
+        {/* Perfil de Usuario Logueado (Mini banner) */}
+        <div className="flex justify-between items-center text-[10px] text-muted-foreground bg-muted/30 border border-border p-2.5 rounded-xl">
+          <span>Identificado como: <strong>{user.nombre}</strong></span>
+          <span className="flex items-center gap-1">
+            {isOffline ? (
+              <span className="w-2 h-2 rounded-full bg-destructive"></span>
+            ) : (
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            )}
+            {isOffline ? 'Modo Local' : 'Nube Conectada'}
+          </span>
+        </div>
+
         {/* Banner de Estado */}
         {statusMessage && (
-          <div className="rounded-xl bg-card border border-border p-3 text-xs font-semibold shadow-md flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="rounded-xl bg-card border border-border p-3 text-xs font-semibold shadow-md flex items-center justify-between">
             <span>{statusMessage}</span>
             <button 
               onClick={() => setStatusMessage('')} 
@@ -269,43 +314,55 @@ export default function AppHome() {
         {/* CONTENEDOR DE TRANSICIÓN DE FLUJO */}
         <div className="relative flex-1 flex flex-col items-center justify-center">
           
-          {currentStep === 'record' ? (
-            /* PASO 1: VISTA INICIAL - GRABADOR DE VOZ DESTACADO */
-            <div className="w-full flex flex-col items-center gap-6 py-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          {currentView === 'record' && (
+            /* PASO 1: GRABADOR DE VOZ (TERAPEUTA & ADMIN) */
+            <div className="w-full flex flex-col items-center gap-6 py-4 animate-in fade-in duration-300">
               <VoiceRecorder
                 onProcessingStart={handleProcessingStart}
                 onProcessingComplete={handleProcessingComplete}
                 onProcessingError={handleProcessingError}
               />
             </div>
-          ) : (
-            /* PASO 2: VISTA TRANSICIÓN - FORMULARIO DE VALIDACIÓN */
-            <div className="w-full animate-in fade-in slide-in-from-bottom-6 duration-300">
-              {prefilledData && (
-                <ValidationForm
-                  prefilledData={prefilledData}
-                  patients={patients}
-                  therapists={therapists}
-                  audioBlob={audioBlob}
-                  isOffline={isOffline}
-                  onSaveComplete={handleSaveComplete}
-                  onCancel={() => {
-                    setPrefilledData(null);
-                    setAudioBlob(null);
-                    setCurrentStep('record');
-                  }}
-                />
-              )}
+          )}
+
+          {currentView === 'validate' && prefilledData && (
+            /* PASO 2: FORMULARIO DE VALIDACIÓN (REGLA DE ORO) */
+            <div className="w-full animate-in fade-in duration-300">
+              <ValidationForm
+                prefilledData={prefilledData}
+                patients={patients}
+                therapists={therapists}
+                audioBlob={audioBlob}
+                isOffline={isOffline}
+                onSaveComplete={handleSaveComplete}
+                onCancel={() => {
+                  setPrefilledData(null);
+                  setAudioBlob(null);
+                  setCurrentView('record');
+                }}
+              />
+            </div>
+          )}
+
+          {currentView === 'dashboard' && user.rol === 'admin' && (
+            /* PASO 3: DASHBOARD ADMINISTRATIVO DE KPIS */
+            <div className="w-full animate-in fade-in duration-300">
+              <Dashboard
+                interventions={interventionsList}
+                onBack={() => setCurrentView('record')}
+              />
             </div>
           )}
         </div>
 
-        {/* HISTORIAL CLINICO (Disponible como referencia abajo en el panel móvil) */}
-        {currentStep === 'record' && (
+        {/* HISTORIAL CLINICO (Solo visible en paso de grabación) */}
+        {currentView === 'record' && (
           <section className="flex flex-col gap-4 mt-4 border-t border-border pt-6 animate-in fade-in duration-300">
             <div className="flex items-center justify-between pb-1">
               <h3 className="text-xs font-black uppercase tracking-wider text-muted-foreground">
-                Últimos Registros Clínicos
+                {user.rol === 'admin' 
+                  ? 'Seguimiento General de Pacientes' 
+                  : 'Mis Intervenciones Recientes'}
               </h3>
               <span className="text-[10px] text-muted-foreground font-semibold">
                 {interventionsList.length} total
@@ -323,6 +380,8 @@ export default function AppHome() {
               </div>
             ) : (
               <div className="flex flex-col gap-3">
+                {/* Si es terapeuta normal, opcionalmente filtramos solo los suyos.
+                    En este MVP unificamos el log pero mostramos distinción de autoría */}
                 {interventionsList.slice(0, 3).map((item: any) => {
                   const isItemOffline = item.estadoSincronizacion === 'offline';
                   const fecha = new Date(item.fechaIntervencion).toLocaleDateString('es-CL', {
@@ -363,6 +422,9 @@ export default function AppHome() {
                           )}
                         </div>
                       </div>
+                      <div className="text-[10px] text-muted-foreground">
+                        Por: {item.terapeutaNombre}
+                      </div>
                       <p className="text-muted-foreground line-clamp-2 mt-1">
                         <strong className="text-foreground">Obs: </strong> {item.observaciones}
                       </p>
@@ -375,7 +437,7 @@ export default function AppHome() {
         )}
       </main>
 
-      {/* PANTALLA DE ÉXITO EN EL GUARDADO (OVERLAY GLASSMORPHIC) */}
+      {/* OVERLAY DE ÉXITO AL GUARDAR */}
       {showSuccessOverlay && (
         <div className="fixed inset-0 flex flex-col items-center justify-center bg-background/95 backdrop-blur-sm z-50 animate-in fade-in duration-200">
           <div className="flex flex-col items-center gap-3 scale-95 animate-in zoom-in-95 duration-300">
@@ -384,7 +446,7 @@ export default function AppHome() {
             </div>
             <h2 className="text-xl font-black text-foreground mt-2">¡Validado y Guardado!</h2>
             <p className="text-xs text-muted-foreground max-w-xs text-center px-6">
-              El reporte de intervención clínica ha sido ingresado exitosamente en el historial del centro.
+              El reporte de intervención clínica ha sido registrado exitosamente en el historial del centro.
             </p>
           </div>
         </div>
