@@ -15,6 +15,13 @@
       "when": 1782265983224,
       "tag": "0001_closed_namorita",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1782268144318,
+      "tag": "0002_curious_mauler",
+      "breakpoints": true
     }
   ]
 }
