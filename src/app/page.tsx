@@ -431,7 +431,7 @@ export default function AppHome() {
             {isOffline ? (
               <span className="w-2 h-2 rounded-full bg-destructive"></span>
             ) : (
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
             )}
             {isOffline ? 'Modo Local' : 'Nube Conectada'}
           </span>
@@ -573,11 +573,11 @@ export default function AppHome() {
                             {fecha}
                           </span>
                           {isItemOffline ? (
-                            <span className="rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-extrabold text-amber-600 border border-amber-500/20">
+                            <span className="rounded-full bg-secondary/10 px-1.5 py-0.5 text-[8px] font-extrabold text-secondary border border-secondary/20">
                               Local
                             </span>
                           ) : (
-                            <span className="rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[8px] font-extrabold text-emerald-600 border border-emerald-500/20">
+                            <span className="rounded-full bg-accent/10 px-1.5 py-0.5 text-[8px] font-extrabold text-accent border border-accent/20">
                               Nube
                             </span>
                           )}
@@ -602,7 +602,7 @@ export default function AppHome() {
       {showSuccessOverlay && (
         <div className="fixed inset-0 flex flex-col items-center justify-center bg-background/95 backdrop-blur-sm z-50 animate-in fade-in duration-200">
           <div className="flex flex-col items-center gap-3 scale-95 animate-in zoom-in-95 duration-300">
-            <div className="flex items-center justify-center w-20 h-20 rounded-full bg-emerald-500 text-white shadow-[0_0_30px_rgba(16,185,129,0.4)] animate-bounce">
+            <div className="flex items-center justify-center w-20 h-20 rounded-full bg-accent text-white shadow-[0_0_30px_rgba(17,120,122,0.4)] animate-bounce">
               <CheckCircle2 className="w-12 h-12" />
             </div>
             <h2 className="text-xl font-black text-foreground mt-2">¡Validado y Guardado!</h2>

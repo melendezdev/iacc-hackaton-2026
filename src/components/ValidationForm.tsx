@@ -150,11 +150,11 @@ export function ValidationForm({
           </p>
         </div>
         {isOffline ? (
-          <span className="rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-600 dark:text-amber-400 border border-amber-500/20">
+          <span className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-semibold text-secondary border border-secondary/20">
             ⚠️ Modo Offline Activo
           </span>
         ) : (
-          <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+          <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent border border-accent/20">
             ✓ En Línea (Sincronizado)
           </span>
         )}

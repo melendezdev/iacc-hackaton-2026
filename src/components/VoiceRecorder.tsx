@@ -197,11 +197,11 @@ export function VoiceRecorder({
         </Button>
 
         {isOnline ? (
-          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-accent bg-accent/10 px-2.5 py-1 rounded-full border border-accent/20">
             <Wifi className="w-3 h-3" /> En línea
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-secondary bg-secondary/10 px-2.5 py-1 rounded-full border border-secondary/20">
             <WifiOff className="w-3 h-3" /> Sin internet
           </span>
         )}
@@ -272,7 +272,7 @@ export function VoiceRecorder({
                   <div className="flex flex-col items-center gap-4">
                     <button
                       onClick={startRecording}
-                      className="flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 text-white transition-all shadow-[0_10px_25px_rgba(16,185,129,0.3)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.5)] hover:scale-105 active:scale-95 border-4 border-background cursor-pointer"
+                      className="flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-tr from-secondary to-accent text-white transition-all shadow-[0_10px_25px_rgba(224,90,54,0.3)] hover:shadow-[0_10px_30px_rgba(224,90,54,0.5)] hover:scale-105 active:scale-95 border-4 border-background cursor-pointer"
                       title="Grabar intervención"
                     >
                       <Mic className="w-12 h-12" />

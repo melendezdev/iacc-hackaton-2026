@@ -115,13 +115,13 @@ export function Dashboard({ interventions, onBack }: DashboardProps) {
               </p>
               <h3 className="text-3xl font-extrabold mt-1">{metrics.total}</h3>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center border border-teal-500/20">
+            <div className="w-9 h-9 rounded-xl bg-accent/10 text-accent flex items-center justify-center border border-accent/20">
               <FileText className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-1.5 text-[10px] text-muted-foreground font-semibold">
-            <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
-            <span className="text-emerald-500 font-bold">+12%</span> vs mes anterior
+            <TrendingUp className="w-3.5 h-3.5 text-accent" />
+            <span className="text-accent font-bold">+12%</span> vs mes anterior
           </div>
         </div>
 
@@ -145,7 +145,7 @@ export function Dashboard({ interventions, onBack }: DashboardProps) {
             </div>
           </div>
           <div className="mt-4 flex items-center gap-1 text-[10px] text-muted-foreground font-semibold">
-            <span className={`font-bold ${metrics.criticosCount > 0 ? 'text-destructive animate-pulse' : 'text-emerald-600'}`}>
+            <span className={`font-bold ${metrics.criticosCount > 0 ? 'text-destructive animate-pulse' : 'text-accent'}`}>
               • {metrics.criticosCount > 0 ? 'Acción inmediata sugerida' : 'Operación clínica estable'}
             </span>
           </div>
@@ -158,17 +158,17 @@ export function Dashboard({ interventions, onBack }: DashboardProps) {
               <p className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
                 Tiempo de Registro por Voz
               </p>
-              <h3 className="text-3xl font-extrabold mt-1 text-emerald-600 dark:text-emerald-400">
+              <h3 className="text-3xl font-extrabold mt-1 text-accent">
                 {metrics.tiempoPromedioRegistro}s
               </h3>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center border border-emerald-500/20">
+            <div className="w-9 h-9 rounded-xl bg-accent/10 text-accent flex items-center justify-center border border-accent/20">
               <Clock className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-1.5 text-[10px] text-muted-foreground font-semibold">
-            <UserCheck className="w-3.5 h-3.5 text-teal-600" />
-            Ahorro de <span className="font-bold text-teal-600">~95%</span> vs digitación manual (180s)
+            <UserCheck className="w-3.5 h-3.5 text-accent" />
+            Ahorro de <span className="font-bold text-accent">~95%</span> vs digitación manual (180s)
           </div>
         </div>
 
@@ -200,7 +200,7 @@ export function Dashboard({ interventions, onBack }: DashboardProps) {
                     {/* Barra de progreso visual estilizada con CSS */}
                     <div className="h-3.5 w-full bg-muted rounded-full overflow-hidden border border-border/50">
                       <div
-                        className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-500"
+                        className="h-full bg-gradient-to-r from-accent to-secondary rounded-full transition-all duration-500"
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
@@ -236,7 +236,7 @@ export function Dashboard({ interventions, onBack }: DashboardProps) {
                 />
                 {/* Progreso */}
                 <path
-                  className="text-teal-500"
+                  className="text-accent"
                   strokeWidth="3.5"
                   strokeDasharray={`${metrics.porcentajeValidacion}, 100`}
                   strokeLinecap="round"
