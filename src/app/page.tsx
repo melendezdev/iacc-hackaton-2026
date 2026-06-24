@@ -16,6 +16,7 @@ import { StructuredIntervention } from '@/lib/transcription';
 import { Wifi, WifiOff, RefreshCw, CheckCircle2, LogOut, LayoutDashboard, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
+import { toast } from 'sonner';
 import {
   obtenerPacientes,
   obtenerTerapeutas,
@@ -59,10 +60,16 @@ export default function AppHome() {
 
     const handleOnline = () => {
       setIsOffline(false);
+      toast.success("¡De vuelta en línea!", {
+        description: "Se iniciará la sincronización automática de datos.",
+      });
       triggerSync();
     };
     const handleOffline = () => {
       setIsOffline(true);
+      toast.warning("Modo sin conexión activado", {
+        description: "Tus registros se guardarán localmente y se subirán al recuperar señal.",
+      });
     };
 
     window.addEventListener('online', handleOnline);
@@ -146,7 +153,9 @@ export default function AppHome() {
             for (const item of locales) {
               await eliminarIntervencionOffline(item.id);
             }
-            setStatusMessage('✓ Datos sincronizados exitosamente.');
+            toast.success("Sincronización completada", {
+              description: `Se subieron ${locales.length} registros clínicos acumulados a la nube.`,
+            });
             setPendingSyncCount(0);
 
             const intervencionesDb = await obtenerIntervenciones();
@@ -157,6 +166,9 @@ export default function AppHome() {
           }
         } catch (error: any) {
           console.error('Fallo en sincronización:', error);
+          toast.error("Error de sincronización", {
+            description: "No se pudieron subir los registros clínicos pendientes. Se reintentará.",
+          });
           setStatusMessage('⚠️ Sincronización suspendida en segundo plano.');
         } finally {
           setSyncing(false);
@@ -174,6 +186,10 @@ export default function AppHome() {
 
   // 4. Captura de grabaciones
   const handleProcessingStart = () => {
+    toast.loading("Procesando dictado...", {
+      id: "processing-transcription",
+      description: "Estructurando narración en campos clínicos obligatorios...",
+    });
     setStatusMessage('IA transcribiendo y estructurando audio...');
   };
 
@@ -182,6 +198,10 @@ export default function AppHome() {
     blob: Blob | null,
     transcriptionText: string
   ) => {
+    toast.dismiss("processing-transcription");
+    toast.success("Estructuración por IA completa", {
+      description: "Revisa los campos clínicos obligatorios antes de aprobar.",
+    });
     setPrefilledData(result);
     setAudioBlob(blob);
     setCurrentView('validate');
@@ -189,6 +209,10 @@ export default function AppHome() {
   };
 
   const handleProcessingError = (error: string) => {
+    toast.dismiss("processing-transcription");
+    toast.error("Error al procesar audio", {
+      description: error,
+    });
     setStatusMessage(`Error: ${error}`);
     setTimeout(() => setStatusMessage(''), 5000);
   };
@@ -198,8 +222,14 @@ export default function AppHome() {
     setShowSuccessOverlay(true);
     
     if (isOfflineSaved) {
+      toast.success("Reporte guardado localmente", {
+        description: "Se guardó localmente en el móvil de forma segura. Se subirá con internet.",
+      });
       setStatusMessage('✓ Guardado en IndexedDB. Se subirá automáticamente al recuperar internet.');
     } else {
+      toast.success("Reporte guardado en la nube", {
+        description: "Los datos clínicos se sincronizaron exitosamente con Turso.",
+      });
       setStatusMessage('✓ Registro clínico subido a la base de datos Turso.');
     }
 
@@ -217,6 +247,9 @@ export default function AppHome() {
   // Cierre de sesión
   const handleLogout = async () => {
     await authClient.signOut();
+    toast.info("Sesión cerrada", {
+      description: "Has salido de forma segura del sistema Talita Kum.",
+    });
     setUser(null);
     setCurrentView('record');
     setPrefilledData(null);
@@ -227,7 +260,12 @@ export default function AppHome() {
   if (!user) {
     return (
       <div className="flex-1 bg-background text-foreground flex items-center justify-center min-h-screen px-4">
-        <Login onLoginSuccess={(u) => setUser(u)} />
+        <Login onLoginSuccess={(u) => {
+          setUser(u);
+          toast.success("Sesión Iniciada", {
+            description: `Bienvenido, ${u.name}. Rol: ${u.role === 'admin' ? 'Administrador' : 'Terapeuta'}.`,
+          });
+        }} />
       </div>
     );
   }
