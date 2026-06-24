@@ -138,6 +138,31 @@ export function Login({ onLoginSuccess }: LoginProps) {
         </p>
       </div>
 
+      {/* Banner de Credenciales para la Demo */}
+      {!isSignUp && (
+        <div className="mb-5 rounded-2xl bg-primary/5 border border-primary/20 p-4 text-xs">
+          <p className="font-bold text-foreground mb-2 flex items-center gap-1.5">
+            🔑 Credenciales de Acceso para la Demo:
+          </p>
+          <div className="flex flex-col gap-2">
+            <div className="bg-background/80 p-2.5 rounded-xl border border-border">
+              <span className="font-bold text-teal-600 block mb-0.5">Rol Terapeuta:</span>
+              <div className="font-mono text-[10px] space-y-0.5 text-muted-foreground">
+                <div>Email: <span className="text-foreground select-all">alejandro.melendez@talitakum.cl</span></div>
+                <div>Pass: <span className="text-foreground select-all">PasswordDemo123!</span></div>
+              </div>
+            </div>
+            <div className="bg-background/80 p-2.5 rounded-xl border border-border">
+              <span className="font-bold text-indigo-600 block mb-0.5">Rol Administrador:</span>
+              <div className="font-mono text-[10px] space-y-0.5 text-muted-foreground">
+                <div>Email: <span className="text-foreground select-all">daniel.silva@talitakum.cl</span></div>
+                <div>Pass: <span className="text-foreground select-all">PasswordDemo123!</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {errorMsg && (
         <div className="mb-4 rounded-xl bg-destructive/10 border border-destructive/20 p-3 text-xs font-semibold text-destructive">
           {errorMsg}
