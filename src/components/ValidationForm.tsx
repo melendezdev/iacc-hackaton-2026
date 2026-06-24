@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 interface ValidationFormProps {
   prefilledData: StructuredIntervention;
   patients: Array<{ id: string; nombre: string; rut?: string | null }>;
-  therapists: Array<{ id: string; nombre: string; email?: string | null }>;
+  therapists: Array<{ id: string; name?: string; nombre?: string; email?: string | null }>;
   audioBlob: Blob | null;
   isOffline: boolean;
   onSaveComplete: (savedRecord: any, isOfflineSaved: boolean) => void;
@@ -181,7 +181,7 @@ export function ValidationForm({
             <option value="">Selecciona tu nombre...</option>
             {therapists.map((t) => (
               <option key={t.id} value={t.id} className='text-foreground!'>
-                {t.nombre}
+                {t.name || t.nombre}
               </option>
             ))}
           </select>
