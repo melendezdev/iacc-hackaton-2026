@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Talita Kum - Registro Inteligente de Intervenciones Terapéuticas (MVP Hackathon)
 
-## Getting Started
+Este es el Producto Mínimo Viable (MVP) desarrollado para la Hackathon. Se trata de una PWA con enfoque **Offline-First** que permite a los terapeutas registrar intervenciones mediante grabaciones de voz estructuradas automáticamente por IA, ofreciendo contingencia local en IndexedDB y sincronización transparente con Turso DB.
 
-First, run the development server:
+---
 
+## 🔑 Credenciales para Pruebas (Demo)
+
+La base de datos contiene los siguientes usuarios semilla creados mediante el script de Seeding para facilitar la demostración de los roles y el dashboard de analíticas:
+
+> [!IMPORTANT]
+> **Contraseña Común de Demostración:** `PasswordDemo123!`
+
+### 🎙️ Cuentas de Rol: Terapeuta
+*Habilitados para grabar dictados por micrófono nativo, revisar la estructuración por IA y certificar las validaciones clínicas (Regla de Oro).*
+
+1.  **Psi. Alejandro Meléndez**
+    *   **Email:** `alejandro.melendez@talitakum.cl`
+    *   **Contraseña:** `PasswordDemo123!`
+2.  **Trabajadora Social Constanza Ruiz**
+    *   **Email:** `constanza.ruiz@talitakum.cl`
+    *   **Contraseña:** `PasswordDemo123!`
+
+### 📊 Cuentas de Rol: Administrador (Directiva)
+*Habilitados para acceder al Dashboard de KPIs, visualizar la distribución de sesiones, cumplimiento de validación clínica e historial de alertas críticas.*
+
+1.  **Dr. Daniel Silva (Psiquiatra)**
+    *   **Email:** `daniel.silva@talitakum.cl`
+    *   **Contraseña:** `PasswordDemo123!`
+
+---
+
+## 🛠️ Comandos de Desarrollo y Operaciones
+
+Este proyecto utiliza **pnpm** para la gestión de dependencias y scripts de base de datos relacional (Drizzle ORM + Turso):
+
+### 1. Iniciar Servidor de Desarrollo Local
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
-# or
-bun dev
+```
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver e interactuar con la aplicación móvil (utiliza el modo responsive de inspección móvil).
+
+### 2. Base de Datos: Generar y Aplicar Cambios de Esquema
+```bash
+# Generar archivos de migración SQL en base a cambios en schema.ts
+pnpm db:generate
+
+# Aplicar las migraciones a la base de datos (local o remota)
+pnpm db:migrate
+
+# Sincronizar el esquema rápidamente sin generar migraciones en desarrollo
+pnpm db:push
+
+# Abrir el explorador visual de base de datos de Drizzle
+pnpm db:studio
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 3. Sembrar Datos Iniciales (Seeding)
+```bash
+pnpm db:seed
+```
+*Este comando limpiará las tablas existentes y volverá a insertar los usuarios de prueba, pacientes clínicos e historial de auditoría de alertas.*
