@@ -160,7 +160,7 @@ export function UsersManagement({ currentUser, onBack }: UsersManagementProps) {
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b border-border mb-6">
         <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-secondary/10 text-secondary">
             <Shield className="w-4 h-4" />
           </div>
           <div>
@@ -196,7 +196,7 @@ export function UsersManagement({ currentUser, onBack }: UsersManagementProps) {
       {/* Estado de Carga */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-12 gap-3 text-muted-foreground text-xs">
-          <RefreshCw className="w-6 h-6 animate-spin text-indigo-500" />
+          <RefreshCw className="w-6 h-6 animate-spin text-secondary" />
           <span>Consultando base de datos de usuarios...</span>
         </div>
       ) : filteredUsers.length === 0 ? (
@@ -257,7 +257,7 @@ export function UsersManagement({ currentUser, onBack }: UsersManagementProps) {
                         checked={userItem.canRecord}
                         disabled={userItem.isBanned}
                         onChange={(e) => handleLocalChange(userItem.id, 'canRecord', e.target.checked)}
-                        className="rounded border-input text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
+                        className="rounded border-input text-secondary focus:ring-secondary w-3.5 h-3.5"
                       />
                       <span className="text-[10px] font-semibold text-foreground">Permitir dictados</span>
                     </label>
@@ -269,7 +269,7 @@ export function UsersManagement({ currentUser, onBack }: UsersManagementProps) {
                         checked={userItem.canViewDashboard || userItem.role === 'admin'}
                         disabled={userItem.role === 'admin' || userItem.isBanned}
                         onChange={(e) => handleLocalChange(userItem.id, 'canViewDashboard', e.target.checked)}
-                        className="rounded border-input text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
+                        className="rounded border-input text-secondary focus:ring-secondary w-3.5 h-3.5"
                       />
                       <span className="text-[10px] font-semibold text-foreground">Ver KPIs Dashboard</span>
                     </label>
@@ -312,7 +312,7 @@ export function UsersManagement({ currentUser, onBack }: UsersManagementProps) {
                         size="sm"
                         onClick={() => handleSaveChanges(userItem)}
                         disabled={savingId === userItem.id}
-                        className="h-7 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold px-3 flex items-center gap-1 cursor-pointer"
+                        className="h-7 rounded-lg bg-secondary hover:bg-secondary/90 text-white text-[10px] font-bold px-3 flex items-center gap-1 cursor-pointer"
                       >
                         {savingId === userItem.id ? (
                           <RefreshCw className="w-3 h-3 animate-spin" />

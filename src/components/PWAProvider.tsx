@@ -205,11 +205,11 @@ const PWABanner: React.FC = () => {
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-md animate-in slide-in-from-bottom-5 duration-300">
-      <div className="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-card/90 backdrop-blur-xl p-5 shadow-2xl transition-all duration-300">
+      <div className="relative overflow-hidden rounded-2xl border border-secondary/30 bg-card/90 backdrop-blur-xl p-5 shadow-2xl transition-all duration-300">
         
         {/* Subtle decorative background gradient */}
-        <div className="absolute -top-10 -right-10 w-24 h-24 bg-indigo-500/20 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-violet-500/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-10 -right-10 w-24 h-24 bg-secondary/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-accent/20 rounded-full blur-2xl pointer-events-none" />
 
         {/* Close Button */}
         <button
@@ -222,7 +222,7 @@ const PWABanner: React.FC = () => {
 
         {/* Content */}
         <div className="flex gap-4 items-start">
-          <div className="flex items-center justify-center p-3 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shrink-0">
+          <div className="flex items-center justify-center p-3 rounded-xl bg-secondary/10 text-secondary shrink-0">
             <Download className="w-5 h-5 animate-bounce" />
           </div>
 
@@ -248,7 +248,7 @@ const PWABanner: React.FC = () => {
           <Button
             size="sm"
             onClick={installApp}
-            className="h-8 rounded-lg bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white text-[11px] font-bold px-4 shadow-lg shadow-indigo-500/20 flex items-center gap-1.5 cursor-pointer"
+            className="h-8 rounded-lg bg-secondary hover:bg-secondary/90 text-white text-[11px] font-bold px-4 shadow-lg shadow-secondary/20 flex items-center gap-1.5 cursor-pointer"
           >
             {isIOS ? (
               <>

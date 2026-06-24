@@ -200,7 +200,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
               </div>
             </div>
             <div className="bg-background/80 p-2.5 rounded-xl border border-border">
-              <span className="font-bold text-indigo-600 block mb-0.5">Rol Administrador:</span>
+              <span className="font-bold text-secondary block mb-0.5">Rol Administrador:</span>
               <div className="font-mono text-[10px] space-y-0.5 text-muted-foreground">
                 <div>Email: <span className="text-foreground select-all">daniel.silva@talitakum.cl</span></div>
                 <div>Pass: <span className="text-foreground select-all">PasswordDemo123!</span></div>
@@ -262,7 +262,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
                 className="w-full flex items-center justify-between p-2.5 rounded-xl border border-border bg-background hover:bg-accent text-left text-xs font-semibold cursor-pointer disabled:opacity-50"
               >
                 <span>📊 Entrar como Administrador</span>
-                <span className="text-[8px] uppercase font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
+                <span className="text-[8px] uppercase font-bold text-secondary bg-secondary/10 px-2 py-0.5 rounded border border-secondary/20">
                   KPIs / Métricas
                 </span>
               </button>
@@ -487,7 +487,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
         <button
           type="button"
           onClick={installApp}
-          className="w-full text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center justify-center gap-1.5 mt-4 cursor-pointer"
+          className="w-full text-xs font-bold text-secondary hover:underline flex items-center justify-center gap-1.5 mt-4 cursor-pointer"
         >
           <Download className="w-3.5 h-3.5 animate-pulse" /> Instalar aplicación en este dispositivo
         </button>

@@ -376,7 +376,7 @@ export default function AppHome() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setCurrentView('dashboard')}
-                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-indigo-600 dark:text-indigo-400 font-bold"
+                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-secondary font-bold"
                     title="Ir a Dashboard"
                   >
                     <LayoutDashboard className="w-4 h-4 mr-1" /> KPIs
@@ -387,7 +387,7 @@ export default function AppHome() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setCurrentView('users')}
-                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-indigo-600 dark:text-indigo-400 font-bold"
+                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-secondary font-bold"
                     title="Ir a Usuarios"
                   >
                     <Shield className="w-4 h-4 mr-1" /> Usuarios
@@ -401,7 +401,7 @@ export default function AppHome() {
                 variant="ghost"
                 size="sm"
                 onClick={installApp}
-                className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-indigo-600 dark:text-indigo-400 font-bold flex items-center gap-1"
+                className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-secondary font-bold flex items-center gap-1"
                 title="Instalar Aplicación"
               >
                 <Download className="w-4 h-4" /> Instalar App
