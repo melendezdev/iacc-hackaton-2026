@@ -66,30 +66,56 @@ export function VoiceRecorder({
   };
 
   // 3. Procesar el audio grabado (Online/Offline)
-  const handleProcessRecording = async () => {
-    if (!audioBlob) return;
-
+  const processRecording = async (blobToProcess: Blob) => {
     onProcessingStart();
     setIsProcessing(true);
     setOfflineStatus(null);
 
     try {
-      // Simular latencia de procesamiento de la IA (Whisper)
-      await new Promise((resolve) => setTimeout(resolve, 1800));
+      let result: StructuredIntervention;
+      let transcriptionText = '';
 
-      const transcriptor = await import('@/lib/transcription');
-      const mockDictation = 
-        "Objetivo: Evaluar el estado emocional y la adherencia al tratamiento. " +
-        "Desarrollo: El paciente asistió a la sesión de forma puntual. Refiere haber experimentado ansiedad leve durante " +
-        "el fin de semana, pero aplicó las técnicas de control de impulsos ensayadas. " +
-        "Acuerdos: El paciente se compromete a escribir un diario de emociones de 3 líneas al día. " +
-        "Acciones a seguir: Continuar monitoreo en la sesión grupal del jueves y ajustar medicación si persiste insomnio. " +
-        "Observaciones: Se observa comprometido y con buena red de apoyo familiar.";
+      if (isOnline) {
+        // Enviar el audioBlob a /api/process-audio
+        const formData = new FormData();
+        formData.append('audioBlob', blobToProcess, 'audio.webm');
 
-      const result = transcriptor.estructurarTexto(mockDictation);
+        const response = await fetch('/api/process-audio', {
+          method: 'POST',
+          body: formData,
+        });
 
-      if (!isOnline) {
-        // Lógica Offline-First
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `Error del servidor: ${response.status}`);
+        }
+
+        const data = await response.json();
+        transcriptionText = data.transcription;
+
+        result = {
+          objetivo: data.structuredData.objetivo || '',
+          desarrollo: data.structuredData.desarrollo || '',
+          acuerdos: data.structuredData.acuerdos || '',
+          accionesSeguir: data.structuredData.acciones || '',
+          observaciones: data.structuredData.observaciones || '',
+        };
+      } else {
+        // Lógica Offline-First (Simulación local)
+        await new Promise((resolve) => setTimeout(resolve, 1800));
+
+        const transcriptor = await import('@/lib/transcription');
+        const mockDictation = 
+          "Objetivo: Evaluar el estado emocional y la adherencia al tratamiento. " +
+          "Desarrollo: El paciente asistió a la sesión de forma puntual. Refiere haber experimentado ansiedad leve durante " +
+          "el fin de semana, pero aplicó las técnicas de control de impulsos ensayadas. " +
+          "Acuerdos: El paciente se compromete a escribir un diario de emociones de 3 líneas al día. " +
+          "Acciones a seguir: Continuar monitoreo en la sesión grupal del jueves y ajustar medicación si persiste insomnio. " +
+          "Observaciones: Se observa comprometido y con buena red de apoyo familiar.";
+
+        result = transcriptor.estructurarTexto(mockDictation);
+        transcriptionText = mockDictation;
+
         const offlineRecord = {
           id: crypto.randomUUID(),
           terapeutaId: 'terapeuta-1',
@@ -103,13 +129,14 @@ export function VoiceRecorder({
           validadoPorTerapeuta: false,
           estadoSincronizacion: 'offline' as const,
           fechaCreacion: new Date().toISOString(),
-          audioBlob: audioBlob,
+          audioBlob: blobToProcess,
         };
 
         await guardarIntervencionOffline(offlineRecord);
-        setOfflineStatus('💾 Sin conexión: Grabación y estructuración guardadas localmente en el móvil.');
+        setOfflineStatus('💾 Sin conexión: Grabación y estructuración guardadas localmente en IndexedDB.');
       }
-      onProcessingComplete(result, audioBlob, 'Dictado de voz estructurado');
+
+      onProcessingComplete(result, blobToProcess, transcriptionText);
     } catch (err: any) {
       console.error(err);
       onProcessingError(err.message || 'Error al procesar el audio dictado.');
@@ -117,6 +144,19 @@ export function VoiceRecorder({
       setIsProcessing(false);
     }
   };
+
+  const handleProcessRecording = async () => {
+    if (!audioBlob) return;
+    await processRecording(audioBlob);
+  };
+
+  // Procesar automáticamente al detener la grabación y obtener el Blob
+  useEffect(() => {
+    if (audioBlob) {
+      processRecording(audioBlob);
+    }
+  }, [audioBlob]);
+
 
   // 4. Procesar el texto manual ingresado libremente (IA estructura)
   const handleProcessManualText = async (e: React.FormEvent) => {
