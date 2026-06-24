@@ -56,15 +56,21 @@ export default function AppHome() {
             setUser(null);
             return;
           }
+          const userRole = u.role || 'terapeuta';
           setUser({
             id: u.id,
             name: u.name,
             email: u.email,
-            role: u.role || 'terapeuta',
+            role: userRole,
             canRecord: u.canRecord !== false,
             canViewDashboard: u.canViewDashboard === true,
             isBanned: u.isBanned === true,
           });
+          if (userRole === 'admin') {
+            setCurrentView('dashboard');
+          } else {
+            setCurrentView('record');
+          }
         }
       } catch (error) {
         console.error('Error al restaurar sesión:', error);
@@ -321,15 +327,21 @@ export default function AppHome() {
             authClient.signOut();
             return;
           }
+          const userRole = u.role || 'terapeuta';
           setUser({
             id: u.id,
             name: u.name,
             email: u.email,
-            role: u.role || 'terapeuta',
+            role: userRole,
             canRecord: u.canRecord !== false,
             canViewDashboard: u.canViewDashboard === true,
             isBanned: u.isBanned === true,
           });
+          if (userRole === 'admin') {
+            setCurrentView('dashboard');
+          } else {
+            setCurrentView('record');
+          }
           toast.success("Sesión Iniciada", {
             description: `Bienvenido, ${u.name}. Rol: ${u.role === 'admin' ? 'Administrador' : 'Terapeuta'}.`,
           });
@@ -364,17 +376,6 @@ export default function AppHome() {
           <div className="flex items-center gap-2">
             {user.role === 'admin' && (
               <>
-                {currentView !== 'record' && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setCurrentView('record')}
-                    className="p-2 h-8 rounded-md cursor-pointer hover:bg-muted text-xs text-muted-foreground"
-                    title="Ir a Grabación"
-                  >
-                    <Mic className="w-4 h-4 mr-1" /> Dictar
-                  </Button>
-                )}
                 {currentView !== 'dashboard' && (
                   <Button
                     variant="ghost"
@@ -457,8 +458,8 @@ export default function AppHome() {
         {/* CONTENEDOR DE TRANSICIÓN DE FLUJO */}
         <div className="relative flex-1 flex flex-col items-center justify-center">
           
-          {currentView === 'record' && (
-            /* PASO 1: GRABADOR DE VOZ (TERAPEUTA & ADMIN) */
+          {currentView === 'record' && user.role !== 'admin' && (
+            /* PASO 1: GRABADOR DE VOZ (TERAPEUTA) */
             <div className="w-full flex flex-col items-center gap-6 py-4 animate-in fade-in duration-300">
               {user.canRecord ? (
                 <VoiceRecorder
@@ -480,7 +481,7 @@ export default function AppHome() {
             </div>
           )}
 
-          {currentView === 'validate' && prefilledData && (
+          {currentView === 'validate' && prefilledData && user.role !== 'admin' && (
             /* PASO 2: FORMULARIO DE VALIDACIÓN (REGLA DE ORO) */
             <div className="w-full animate-in fade-in duration-300">
               <ValidationForm
@@ -521,13 +522,11 @@ export default function AppHome() {
         </div>
 
         {/* HISTORIAL CLINICO (Solo visible en paso de grabación) */}
-        {currentView === 'record' && (
+        {currentView === 'record' && user.role !== 'admin' && (
           <section className="flex flex-col gap-4 mt-4 border-t border-border pt-6 animate-in fade-in duration-300">
             <div className="flex items-center justify-between pb-1">
               <h3 className="text-xs font-black uppercase tracking-wider text-muted-foreground">
-                {user.role === 'admin' 
-                  ? 'Seguimiento General de Pacientes' 
-                  : 'Mis Intervenciones Recientes'}
+                Mis Intervenciones Recientes
               </h3>
               <span className="text-[10px] text-muted-foreground font-semibold">
                 {interventionsList.length} total
