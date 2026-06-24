@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
 import { ESCENARIOS_DEMO, StructuredIntervention } from '@/lib/transcription';
+import { Button } from '@/components/ui/button';
 
 interface AudioCaptureProps {
   onProcessingStart: () => void;
@@ -94,7 +95,7 @@ export function AudioCapture({
   };
 
   return (
-    <div className="w-full rounded-3xl border border-zinc-200/50 bg-white/70 p-6 shadow-xl backdrop-blur-md transition-all dark:border-zinc-800/50 dark:bg-zinc-950/70">
+    <div className="w-full rounded-3xl border border-border bg-card p-6 shadow-xl backdrop-blur-md transition-all text-card-foreground">
       
       {/* Selector de Demos - CRITICAL PARA HACKATHONS */}
       <div className="mb-6 flex flex-col gap-2 rounded-2xl bg-teal-500/10 p-4 border border-teal-500/20">
@@ -113,7 +114,7 @@ export function AudioCapture({
               className={`rounded-xl px-3 py-2 text-left text-xs font-medium border transition-all cursor-pointer ${
                 selectedDemo === idx
                   ? 'bg-teal-600 border-teal-700 text-white shadow-md'
-                  : 'bg-white/80 border-zinc-200 text-zinc-700 hover:bg-zinc-50 dark:bg-zinc-900/60 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800/50'
+                  : 'bg-background border-input text-foreground hover:bg-accent hover:text-accent-foreground'
               }`}
             >
               {demo.titulo}
@@ -122,27 +123,29 @@ export function AudioCapture({
         </div>
       </div>
 
-      <div className="flex items-center justify-between border-b border-zinc-200/50 pb-4 mb-6 dark:border-zinc-800/50">
+      <div className="flex items-center justify-between border-b border-border pb-4 mb-6">
         <div>
-          <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
+          <h2 className="text-lg font-bold text-foreground">
             {keyboardMode ? 'Dictado por Teclado' : 'Dictado por Voz'}
           </h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-muted-foreground">
             {keyboardMode 
               ? 'Escribe o edita el resumen de la intervención.' 
               : 'Presiona el botón para grabar lo ocurrido con el paciente.'}
           </p>
         </div>
-        <button
+        <Button
+          variant="secondary"
+          size="sm"
           onClick={() => {
             setKeyboardMode(!keyboardMode);
             resetRecorder();
             setSelectedDemo('');
           }}
-          className="rounded-xl bg-zinc-100 px-3  py-1.5 text-xs font-semibold text-zinc-700 transition-all hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 cursor-pointer"
+          className="rounded-xl cursor-pointer"
         >
           {keyboardMode ? '🎙️ Usar Voz' : '⌨️ Usar Teclado'}
-        </button>
+        </Button>
       </div>
 
       {!keyboardMode ? (
@@ -152,23 +155,23 @@ export function AudioCapture({
             /* Animación de Ondas y Estado Grabando */
             <div className="flex flex-col items-center gap-4">
               <div className="flex items-center gap-1.5 h-10">
-                <span className="w-1.5 h-4 bg-red-500 rounded-full animate-bounce delay-100"></span>
-                <span className="w-1.5 h-8 bg-red-500 rounded-full animate-bounce delay-200"></span>
-                <span className="w-1.5 h-10 bg-red-500 rounded-full animate-bounce delay-300"></span>
-                <span className="w-1.5 h-6 bg-red-500 rounded-full animate-bounce delay-150"></span>
-                <span className="w-1.5 h-4 bg-red-500 rounded-full animate-bounce"></span>
+                <span className="w-1.5 h-4 bg-destructive rounded-full animate-bounce delay-100"></span>
+                <span className="w-1.5 h-8 bg-destructive rounded-full animate-bounce delay-200"></span>
+                <span className="w-1.5 h-10 bg-destructive rounded-full animate-bounce delay-300"></span>
+                <span className="w-1.5 h-6 bg-destructive rounded-full animate-bounce delay-150"></span>
+                <span className="w-1.5 h-4 bg-destructive rounded-full animate-bounce"></span>
               </div>
-              <span className="text-2xl font-bold font-mono text-zinc-900 dark:text-white">
+              <span className="text-2xl font-bold font-mono text-foreground">
                 {formatTime(recordingTime)}
               </span>
               <button
                 onClick={handleStopRecording}
-                className="flex items-center justify-center w-20 h-20 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] cursor-pointer"
+                className="flex items-center justify-center w-20 h-20 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-all shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] cursor-pointer"
                 title="Detener Grabación"
               >
-                <div className="w-8 h-8 bg-white rounded-lg"></div>
+                <div className="w-8 h-8 bg-current rounded-lg"></div>
               </button>
-              <p className="text-xs text-red-500 font-semibold animate-pulse mt-2">
+              <p className="text-xs text-destructive font-semibold animate-pulse mt-2">
                 Escuchando y grabando... dictado continuo activo.
               </p>
             </div>
@@ -184,19 +187,20 @@ export function AudioCapture({
                   <audio src={audioUrl} controls className="w-full max-w-sm rounded-lg" />
                   
                   <div className="flex gap-3 w-full max-w-sm mt-2">
-                    <button
+                    <Button
+                      variant="outline"
                       onClick={resetRecorder}
-                      className="flex-1 rounded-xl border border-zinc-200 bg-white py-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 cursor-pointer"
+                      className="flex-1 rounded-xl cursor-pointer"
                     >
                       Descartar
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={handleSendAudio}
                       disabled={isProcessing}
-                      className="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 py-2.5 text-sm font-semibold text-white shadow-md hover:opacity-90 disabled:opacity-50 cursor-pointer"
+                      className="flex-1 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
                     >
                       {isProcessing ? 'Procesando...' : 'Estructurar con IA ⚡'}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ) : (
@@ -217,10 +221,10 @@ export function AudioCapture({
                       <path d="M19.5 12a.75.75 0 0 0-1.5 0 6 6 0 0 1-12 0 .75.75 0 0 0-1.5 0 7.5 7.5 0 0 0 6.75 7.451v2.799a.75.75 0 0 0 1.5 0v-2.799A7.5 7.5 0 0 0 19.5 12Z" />
                     </svg>
                   </button>
-                  <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-300">
+                  <p className="text-sm font-semibold text-foreground">
                     Presiona para dictar audio
                   </p>
-                  <span className="text-xs text-zinc-400 dark:text-zinc-500 text-center max-w-xs">
+                  <span className="text-xs text-muted-foreground text-center max-w-xs">
                     Recomendado para uso en pasillos o traslado rápido de pacientes.
                   </span>
                 </div>
@@ -232,7 +236,7 @@ export function AudioCapture({
         // MODO TECLADO (FALLBACK Y DEMOS)
         <form onSubmit={handleSendManualText} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Resumen de la sesión
             </label>
             <textarea
@@ -240,43 +244,44 @@ export function AudioCapture({
               onChange={(e) => setManualText(e.target.value)}
               placeholder="Describe lo ocurrido en tus propias palabras. Ejemplo: Objetivo de hoy... Sesión enfocada en... Llegamos al acuerdo de..."
               rows={6}
-              className="w-full rounded-2xl border border-zinc-200 bg-white/50 p-4 text-sm outline-none transition-all focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100 dark:focus:border-teal-500"
+              className="w-full rounded-2xl border border-input bg-background/50 p-4 text-sm outline-none transition-all focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
               required
             />
           </div>
           <div className="flex justify-end gap-3">
-            <button
+            <Button
+              variant="outline"
               type="button"
               onClick={() => {
                 setManualText('');
                 setSelectedDemo('');
               }}
-              className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 cursor-pointer"
+              className="rounded-xl cursor-pointer"
             >
               Limpiar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={isProcessing || !manualText.trim()}
-              className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md hover:opacity-90 disabled:opacity-50 cursor-pointer"
+              className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
             >
               {isProcessing ? 'Procesando...' : 'Estructurar con IA ⚡'}
-            </button>
+            </Button>
           </div>
         </form>
       )}
 
       {/* Indicador de carga de IA */}
       {isProcessing && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 dark:bg-zinc-950/90 rounded-3xl z-10 animate-fade-in">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/90 rounded-3xl z-10 animate-fade-in">
           <div className="relative flex items-center justify-center">
-            <div className="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-600 rounded-full animate-spin"></div>
-            <div className="absolute w-8 h-8 bg-emerald-500 rounded-full animate-ping opacity-25"></div>
+            <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+            <div className="absolute w-8 h-8 bg-primary rounded-full animate-ping opacity-25"></div>
           </div>
-          <h3 className="mt-4 text-base font-bold text-zinc-800 dark:text-zinc-200">
+          <h3 className="mt-4 text-base font-bold text-foreground">
             Inteligencia Artificial Procesando
           </h3>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-xs text-center px-4">
+          <p className="text-xs text-muted-foreground mt-1 max-w-xs text-center px-4">
             Extrayendo objetivo, desarrollo, acuerdos, acciones y observaciones en formato clínico estructurado...
           </p>
         </div>

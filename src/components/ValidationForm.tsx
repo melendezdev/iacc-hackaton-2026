@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { StructuredIntervention } from '@/lib/transcription';
 import { OfflineIntervention, guardarIntervencionOffline } from '@/lib/indexedDb';
 import { guardarIntervencion } from '@/app/actions';
+import { Button } from '@/components/ui/button';
 
 interface ValidationFormProps {
   prefilledData: StructuredIntervention;
@@ -137,14 +138,14 @@ export function ValidationForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full rounded-3xl border border-zinc-200/50 bg-white/70 p-6 shadow-xl backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/70"
+      className="w-full rounded-3xl border border-border bg-card p-6 shadow-xl text-card-foreground"
     >
-      <div className="flex items-center justify-between border-b border-zinc-200/50 pb-4 mb-6 dark:border-zinc-800/50">
+      <div className="flex items-center justify-between border-b border-border pb-4 mb-6">
         <div>
-          <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
+          <h2 className="text-lg font-bold text-foreground">
             Revisión y Validación de la Intervención
           </h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-muted-foreground">
             La IA ha pre-llenado el formulario. Revisa, edita los campos y valida para guardar.
           </p>
         </div>
@@ -161,15 +162,15 @@ export function ValidationForm({
 
       {/* Alerta Clínica Dinámica */}
       {alertaClinica.activa && (
-        <div className="mb-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 p-4 animate-pulse">
-          <p className="text-xs font-semibold text-rose-700 dark:text-rose-400">
+        <div className="mb-6 rounded-2xl bg-destructive/10 border border-destructive/20 p-4 animate-pulse">
+          <p className="text-xs font-semibold text-destructive">
             {alertaClinica.mensaje}
           </p>
         </div>
       )}
 
       {errorMsg && (
-        <div className="mb-6 rounded-2xl bg-red-500/15 border border-red-500/25 p-4 text-xs font-semibold text-red-600 dark:text-red-400">
+        <div className="mb-6 rounded-2xl bg-destructive/15 border border-destructive/25 p-4 text-xs font-semibold text-destructive">
           {errorMsg}
         </div>
       )}
@@ -177,13 +178,13 @@ export function ValidationForm({
       {/* Selectores de Roles */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mb-6">
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             Terapeuta Interventor *
           </label>
           <select
             value={selectedTherapist}
             onChange={(e) => setSelectedTherapist(e.target.value)}
-            className="w-full rounded-xl border border-zinc-200 bg-white/50 p-3 text-sm outline-none focus:border-teal-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100"
+            className="w-full rounded-xl border border-input bg-background p-3 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           >
             <option value="">Selecciona tu nombre...</option>
@@ -196,13 +197,13 @@ export function ValidationForm({
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             Paciente *
           </label>
           <select
             value={selectedPatient}
             onChange={(e) => setSelectedPatient(e.target.value)}
-            className="w-full rounded-xl border border-zinc-200 bg-white/50 p-3 text-sm outline-none focus:border-teal-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100"
+            className="w-full rounded-xl border border-input bg-background p-3 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           >
             <option value="">Selecciona paciente intervenido...</option>
@@ -218,87 +219,87 @@ export function ValidationForm({
       {/* Los 5 Campos Clínicos Obligatorios */}
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             1. Objetivo de la Intervención
           </label>
           <textarea
             value={objetivo}
             onChange={(e) => setObjetivo(e.target.value)}
             rows={2}
-            className="w-full rounded-xl border border-zinc-200 bg-white/50 p-3.5 text-sm outline-none focus:border-teal-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100"
+            className="w-full rounded-xl border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             2. Desarrollo de lo ocurrido
           </label>
           <textarea
             value={desarrollo}
             onChange={(e) => setDesarrollo(e.target.value)}
             rows={4}
-            className="w-full rounded-xl border border-zinc-200 bg-white/50 p-3.5 text-sm outline-none focus:border-teal-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100"
+            className="w-full rounded-xl border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             3. Acuerdos
           </label>
           <textarea
             value={acuerdos}
             onChange={(e) => setAcuerdos(e.target.value)}
             rows={2}
-            className="w-full rounded-xl border border-zinc-200 bg-white/50 p-3.5 text-sm outline-none focus:border-teal-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100"
+            className="w-full rounded-xl border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             4. Acciones a seguir
           </label>
           <textarea
             value={accionesSeguir}
             onChange={(e) => setAccionesSeguir(e.target.value)}
             rows={2}
-            className="w-full rounded-xl border border-zinc-200 bg-white/50 p-3.5 text-sm outline-none focus:border-teal-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100"
+            className="w-full rounded-xl border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             5. Observaciones relevantes
           </label>
           <textarea
             value={observaciones}
             onChange={(e) => setObservaciones(e.target.value)}
             rows={2}
-            className="w-full rounded-xl border border-zinc-200 bg-white/50 p-3.5 text-sm outline-none focus:border-teal-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100"
+            className="w-full rounded-xl border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           />
         </div>
       </div>
 
       {/* Regla de Oro Checkbox */}
-      <div className="mt-8 border-t border-zinc-200/50 pt-6 dark:border-zinc-800/50">
-        <label className="relative flex items-start gap-3 rounded-2xl bg-teal-500/5 border border-teal-500/20 p-4 transition-all hover:bg-teal-500/10 cursor-pointer">
+      <div className="mt-8 border-t border-border pt-6">
+        <label className="relative flex items-start gap-3 rounded-2xl bg-primary/5 border border-primary/10 p-4 transition-all hover:bg-primary/10 cursor-pointer">
           <div className="flex h-5 items-center">
             <input
               type="checkbox"
               checked={validadoPorTerapeuta}
               onChange={(e) => setValidadoPorTerapeuta(e.target.checked)}
-              className="h-5 w-5 rounded border-zinc-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+              className="h-5 w-5 rounded border-input text-primary focus:ring-ring cursor-pointer bg-background"
             />
           </div>
           <div className="text-sm">
-            <span className="font-bold text-zinc-900 dark:text-zinc-100 block">
+            <span className="font-bold text-foreground block">
               🛡️ Regla de Oro: Certificación Profesional
             </span>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400">
+            <span className="text-xs text-muted-foreground">
               Confirmo que he revisado minuciosamente y valido que esta información estructurada por IA refleja fielmente lo ocurrido y las decisiones tomadas durante la intervención clínica.
             </span>
           </div>
@@ -306,22 +307,23 @@ export function ValidationForm({
       </div>
 
       {/* Botones de acción */}
-      <div className="mt-6 flex justify-end gap-3 border-t border-zinc-200/50 pt-4 dark:border-zinc-800/50">
-        <button
+      <div className="mt-6 flex justify-end gap-3 border-t border-border pt-4">
+        <Button
+          variant="outline"
           type="button"
           onClick={onCancel}
           disabled={isSaving}
-          className="rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 cursor-pointer"
+          className="rounded-xl cursor-pointer"
         >
           Descartar
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
           disabled={isSaving}
-          className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md hover:opacity-90 disabled:opacity-50 cursor-pointer"
+          className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
         >
           {isSaving ? 'Guardando...' : isOffline ? 'Guardar en Celular (Offline) 💾' : 'Guardar y Subir a Nube ☁️'}
-        </button>
+        </Button>
       </div>
     </form>
   );
