@@ -205,7 +205,7 @@ const PWABanner: React.FC = () => {
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-md animate-in slide-in-from-bottom-5 duration-300">
-      <div className="relative overflow-hidden rounded-2xl border border-secondary/30 bg-card/90 backdrop-blur-xl p-5 shadow-2xl transition-all duration-300">
+      <div className="relative overflow-hidden rounded-lg border border-secondary/30 bg-card/90 backdrop-blur-xl p-5 shadow-2xl transition-all duration-300">
         
         {/* Subtle decorative background gradient */}
         <div className="absolute -top-10 -right-10 w-24 h-24 bg-secondary/20 rounded-full blur-2xl pointer-events-none" />
@@ -222,7 +222,7 @@ const PWABanner: React.FC = () => {
 
         {/* Content */}
         <div className="flex gap-4 items-start">
-          <div className="flex items-center justify-center p-3 rounded-xl bg-secondary/10 text-secondary shrink-0">
+          <div className="flex items-center justify-center p-3 rounded-md bg-secondary/10 text-secondary shrink-0">
             <Download className="w-5 h-5 animate-bounce" />
           </div>
 

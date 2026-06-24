@@ -178,7 +178,7 @@ export function VoiceRecorder({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-3xl border border-border bg-card p-6 shadow-xl text-card-foreground relative overflow-hidden">
+    <div className="w-full max-w-md mx-auto rounded-lg border border-border bg-card p-6 shadow-xl text-card-foreground relative overflow-hidden">
       
       {/* Barra de Estado superior */}
       <div className="flex justify-between items-center mb-6 border-b border-border pb-4">
@@ -191,7 +191,7 @@ export function VoiceRecorder({
             resetRecorder();
             setManualText('');
           }}
-          className="rounded-xl h-8 text-[11px] font-extrabold cursor-pointer border border-border bg-background"
+          className="rounded-md h-8 text-[11px] font-extrabold cursor-pointer border border-border bg-background"
         >
           {keyboardMode ? '🎙️ Usar Micrófono' : '⌨️ Usar Teclado'}
         </Button>
@@ -249,20 +249,20 @@ export function VoiceRecorder({
                     <div className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
                       ✓ Audio listo para procesar
                     </div>
-                    <audio src={audioUrl} controls className="w-full max-w-xs rounded-xl" />
+                    <audio src={audioUrl} controls className="w-full max-w-xs rounded-md" />
 
                     <div className="flex gap-3 w-full max-w-xs mt-2">
                       <Button
                         variant="outline"
                         onClick={resetRecorder}
-                        className="flex-1 rounded-xl cursor-pointer"
+                        className="flex-1 rounded-md cursor-pointer"
                       >
                         Descartar
                       </Button>
                       <Button
                         onClick={handleProcessRecording}
                         disabled={isProcessing}
-                        className="flex-1 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
+                        className="flex-1 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
                       >
                         {isProcessing ? 'Procesando...' : 'Estructurar ⚡'}
                       </Button>
@@ -308,7 +308,7 @@ export function VoiceRecorder({
               onChange={(e) => setManualText(e.target.value)}
               placeholder="Ejemplo: El objetivo fue la reinserción social. Durante el desarrollo el paciente se mostró motivado en postular a ofertas. Conversamos y el acuerdo es asistir al taller el martes. Acciones: contactar al tallerista. Observaciones: se observa motivado y sin signos de riesgo."
               rows={6}
-              className="w-full rounded-2xl border border-input bg-background/50 p-4 text-sm outline-none transition-all focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+              className="w-full rounded-lg border border-input bg-background/50 p-4 text-sm outline-none transition-all focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
               required
             />
           </div>
@@ -318,14 +318,14 @@ export function VoiceRecorder({
               variant="outline"
               type="button"
               onClick={() => setManualText('')}
-              className="rounded-xl cursor-pointer"
+              className="rounded-md cursor-pointer"
             >
               Limpiar
             </Button>
             <Button
               type="submit"
               disabled={isProcessing || !manualText.trim()}
-              className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
+              className="rounded-md bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
             >
               {isProcessing ? 'Procesando...' : 'Estructurar con IA ⚡'}
             </Button>
@@ -348,7 +348,7 @@ export function VoiceRecorder({
 
       {/* Estado del modo sin conexión */}
       {offlineStatus && (
-        <div className="mt-4 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-left text-xs font-bold text-amber-700 dark:text-amber-400">
+        <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-left text-xs font-bold text-amber-700 dark:text-amber-400">
           {offlineStatus}
         </div>
       )}

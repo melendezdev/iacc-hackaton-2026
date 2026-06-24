@@ -138,7 +138,7 @@ export function ValidationForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full rounded-3xl border border-border bg-card p-6 shadow-xl text-card-foreground"
+      className="w-full rounded-lg border border-border bg-card p-6 shadow-xl text-card-foreground"
     >
       <div className="flex items-center justify-between border-b border-border pb-4 mb-6">
         <div>
@@ -162,7 +162,7 @@ export function ValidationForm({
 
       {/* Alerta Clínica Dinámica */}
       {alertaClinica.activa && (
-        <div className="mb-6 rounded-2xl bg-destructive/10 border border-destructive/20 p-4 animate-pulse">
+        <div className="mb-6 rounded-lg bg-destructive/10 border border-destructive/20 p-4 animate-pulse">
           <p className="text-xs font-semibold text-destructive">
             {alertaClinica.mensaje}
           </p>
@@ -170,7 +170,7 @@ export function ValidationForm({
       )}
 
       {errorMsg && (
-        <div className="mb-6 rounded-2xl bg-destructive/15 border border-destructive/25 p-4 text-xs font-semibold text-destructive">
+        <div className="mb-6 rounded-lg bg-destructive/15 border border-destructive/25 p-4 text-xs font-semibold text-destructive">
           {errorMsg}
         </div>
       )}
@@ -184,7 +184,7 @@ export function ValidationForm({
           <select
             value={selectedTherapist}
             onChange={(e) => setSelectedTherapist(e.target.value)}
-            className="w-full rounded-xl border border-input bg-background p-3 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+            className="w-full rounded-md border border-input bg-background p-3 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           >
             <option value="">Selecciona tu nombre...</option>
@@ -203,7 +203,7 @@ export function ValidationForm({
           <select
             value={selectedPatient}
             onChange={(e) => setSelectedPatient(e.target.value)}
-            className="w-full rounded-xl border border-input bg-background p-3 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+            className="w-full rounded-md border border-input bg-background p-3 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           >
             <option value="">Selecciona paciente intervenido...</option>
@@ -226,7 +226,7 @@ export function ValidationForm({
             value={objetivo}
             onChange={(e) => setObjetivo(e.target.value)}
             rows={2}
-            className="w-full rounded-xl border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+            className="w-full rounded-md border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           />
         </div>
@@ -239,7 +239,7 @@ export function ValidationForm({
             value={desarrollo}
             onChange={(e) => setDesarrollo(e.target.value)}
             rows={4}
-            className="w-full rounded-xl border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+            className="w-full rounded-md border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           />
         </div>
@@ -252,7 +252,7 @@ export function ValidationForm({
             value={acuerdos}
             onChange={(e) => setAcuerdos(e.target.value)}
             rows={2}
-            className="w-full rounded-xl border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+            className="w-full rounded-md border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           />
         </div>
@@ -265,7 +265,7 @@ export function ValidationForm({
             value={accionesSeguir}
             onChange={(e) => setAccionesSeguir(e.target.value)}
             rows={2}
-            className="w-full rounded-xl border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+            className="w-full rounded-md border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           />
         </div>
@@ -278,7 +278,7 @@ export function ValidationForm({
             value={observaciones}
             onChange={(e) => setObservaciones(e.target.value)}
             rows={2}
-            className="w-full rounded-xl border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+            className="w-full rounded-md border border-input bg-background p-3.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             required
           />
         </div>
@@ -286,7 +286,7 @@ export function ValidationForm({
 
       {/* Regla de Oro Checkbox */}
       <div className="mt-8 border-t border-border pt-6">
-        <label className="relative flex items-start gap-3 rounded-2xl bg-primary/5 border border-primary/10 p-4 transition-all hover:bg-primary/10 cursor-pointer">
+        <label className="relative flex items-start gap-3 rounded-lg bg-primary/5 border border-primary/10 p-4 transition-all hover:bg-primary/10 cursor-pointer">
           <div className="flex h-5 items-center">
             <input
               type="checkbox"
@@ -313,14 +313,14 @@ export function ValidationForm({
           type="button"
           onClick={onCancel}
           disabled={isSaving}
-          className="rounded-xl cursor-pointer"
+          className="rounded-md cursor-pointer"
         >
           Descartar
         </Button>
         <Button
           type="submit"
           disabled={isSaving}
-          className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
+          className="rounded-md bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
         >
           {isSaving ? 'Guardando...' : isOffline ? 'Guardar en Celular (Offline) 💾' : 'Guardar y Subir a Nube ☁️'}
         </Button>

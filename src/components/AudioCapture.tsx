@@ -95,10 +95,10 @@ export function AudioCapture({
   };
 
   return (
-    <div className="w-full rounded-3xl border border-border bg-card p-6 shadow-xl backdrop-blur-md transition-all text-card-foreground">
+    <div className="w-full rounded-lg border border-border bg-card p-6 shadow-xl backdrop-blur-md transition-all text-card-foreground">
       
       {/* Selector de Demos - CRITICAL PARA HACKATHONS */}
-      <div className="mb-6 flex flex-col gap-2 rounded-2xl bg-teal-500/10 p-4 border border-teal-500/20">
+      <div className="mb-6 flex flex-col gap-2 rounded-lg bg-teal-500/10 p-4 border border-teal-500/20">
         <label className="text-xs font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-400">
           💡 Modo Demostración (Hackathon 72h)
         </label>
@@ -111,7 +111,7 @@ export function AudioCapture({
               key={idx}
               type="button"
               onClick={() => handleSelectDemo(idx)}
-              className={`rounded-xl px-3 py-2 text-left text-xs font-medium border transition-all cursor-pointer ${
+              className={`rounded-md px-3 py-2 text-left text-xs font-medium border transition-all cursor-pointer ${
                 selectedDemo === idx
                   ? 'bg-teal-600 border-teal-700 text-white shadow-md'
                   : 'bg-background border-input text-foreground hover:bg-accent hover:text-accent-foreground'
@@ -142,7 +142,7 @@ export function AudioCapture({
             resetRecorder();
             setSelectedDemo('');
           }}
-          className="rounded-xl cursor-pointer"
+          className="rounded-md cursor-pointer"
         >
           {keyboardMode ? '🎙️ Usar Voz' : '⌨️ Usar Teclado'}
         </Button>
@@ -190,14 +190,14 @@ export function AudioCapture({
                     <Button
                       variant="outline"
                       onClick={resetRecorder}
-                      className="flex-1 rounded-xl cursor-pointer"
+                      className="flex-1 rounded-md cursor-pointer"
                     >
                       Descartar
                     </Button>
                     <Button
                       onClick={handleSendAudio}
                       disabled={isProcessing}
-                      className="flex-1 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
+                      className="flex-1 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
                     >
                       {isProcessing ? 'Procesando...' : 'Estructurar con IA ⚡'}
                     </Button>
@@ -244,7 +244,7 @@ export function AudioCapture({
               onChange={(e) => setManualText(e.target.value)}
               placeholder="Describe lo ocurrido en tus propias palabras. Ejemplo: Objetivo de hoy... Sesión enfocada en... Llegamos al acuerdo de..."
               rows={6}
-              className="w-full rounded-2xl border border-input bg-background/50 p-4 text-sm outline-none transition-all focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+              className="w-full rounded-lg border border-input bg-background/50 p-4 text-sm outline-none transition-all focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
               required
             />
           </div>
@@ -256,14 +256,14 @@ export function AudioCapture({
                 setManualText('');
                 setSelectedDemo('');
               }}
-              className="rounded-xl cursor-pointer"
+              className="rounded-md cursor-pointer"
             >
               Limpiar
             </Button>
             <Button
               type="submit"
               disabled={isProcessing || !manualText.trim()}
-              className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
+              className="rounded-md bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
             >
               {isProcessing ? 'Procesando...' : 'Estructurar con IA ⚡'}
             </Button>
@@ -273,7 +273,7 @@ export function AudioCapture({
 
       {/* Indicador de carga de IA */}
       {isProcessing && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/90 rounded-3xl z-10 animate-fade-in">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/90 rounded-lg z-10 animate-fade-in">
           <div className="relative flex items-center justify-center">
             <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
             <div className="absolute w-8 h-8 bg-primary rounded-full animate-ping opacity-25"></div>

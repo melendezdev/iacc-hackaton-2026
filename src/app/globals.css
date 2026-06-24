@@ -83,7 +83,7 @@
   --chart-4: #d97706;
   --chart-5: #6b6357;
   
-  --radius: 1rem; /* More rounded, user-friendly interface */
+  --radius: 0.5rem; /* Professional, clean rounded corners (standard for high-end SaaS) */
   
   --sidebar: #ffffff;
   --sidebar-foreground: #1e1b18;

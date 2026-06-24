@@ -166,9 +166,9 @@ export function Login({ onLoginSuccess }: LoginProps) {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-3xl border border-border bg-card p-6 shadow-xl text-card-foreground">
+    <div className="w-full max-w-md mx-auto rounded-lg border border-border bg-card p-6 shadow-xl text-card-foreground">
       <div className="flex flex-col items-center text-center mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-md mb-3">
+        <div className="w-12 h-12 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-md mb-3">
           <Shield className="w-6 h-6" />
         </div>
         <h2 className="text-xl font-extrabold tracking-tight">
@@ -187,19 +187,19 @@ export function Login({ onLoginSuccess }: LoginProps) {
 
       {/* Banner de Credenciales para la Demo */}
       {view === 'login' && (
-        <div className="mb-5 rounded-2xl bg-primary/5 border border-primary/20 p-4 text-xs">
+        <div className="mb-5 rounded-lg bg-primary/5 border border-primary/20 p-4 text-xs">
           <p className="font-bold text-foreground mb-2 flex items-center gap-1.5">
             🔑 Credenciales de Acceso para la Demo:
           </p>
           <div className="flex flex-col gap-2">
-            <div className="bg-background/80 p-2.5 rounded-xl border border-border">
+            <div className="bg-background/80 p-2.5 rounded-md border border-border">
               <span className="font-bold text-teal-600 block mb-0.5">Rol Terapeuta:</span>
               <div className="font-mono text-[10px] space-y-0.5 text-muted-foreground">
                 <div>Email: <span className="text-foreground select-all">alejandro.melendez@talitakum.cl</span></div>
                 <div>Pass: <span className="text-foreground select-all">PasswordDemo123!</span></div>
               </div>
             </div>
-            <div className="bg-background/80 p-2.5 rounded-xl border border-border">
+            <div className="bg-background/80 p-2.5 rounded-md border border-border">
               <span className="font-bold text-secondary block mb-0.5">Rol Administrador:</span>
               <div className="font-mono text-[10px] space-y-0.5 text-muted-foreground">
                 <div>Email: <span className="text-foreground select-all">daniel.silva@talitakum.cl</span></div>
@@ -211,13 +211,13 @@ export function Login({ onLoginSuccess }: LoginProps) {
       )}
 
       {errorMsg && (
-        <div className="mb-4 rounded-xl bg-destructive/10 border border-destructive/20 p-3 text-xs font-semibold text-destructive">
+        <div className="mb-4 rounded-md bg-destructive/10 border border-destructive/20 p-3 text-xs font-semibold text-destructive">
           {errorMsg}
         </div>
       )}
 
       {successMsg && (
-        <div className="mb-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3 text-xs font-semibold text-emerald-600">
+        <div className="mb-4 rounded-md bg-emerald-500/10 border border-emerald-500/20 p-3 text-xs font-semibold text-emerald-600">
           {successMsg}
         </div>
       )}
@@ -226,7 +226,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
       {view === 'login' && (
         <>
           {/* Accesos Rápidos */}
-          <div className="mb-6 rounded-2xl bg-muted p-4 border border-border">
+          <div className="mb-6 rounded-lg bg-muted p-4 border border-border">
             <label className="text-[10px] font-black uppercase tracking-wider text-muted-foreground block mb-2">
               ⚡ Accesos Rápidos (Registra/Inicia automáticamente)
             </label>
@@ -241,7 +241,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
                   )
                 }
                 disabled={isLoading}
-                className="w-full flex items-center justify-between p-2.5 rounded-xl border border-border bg-background hover:bg-accent text-left text-xs font-semibold cursor-pointer disabled:opacity-50"
+                className="w-full flex items-center justify-between p-2.5 rounded-md border border-border bg-background hover:bg-accent text-left text-xs font-semibold cursor-pointer disabled:opacity-50"
               >
                 <span>🎙️ Entrar como Terapeuta</span>
                 <span className="text-[8px] uppercase font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">
@@ -259,7 +259,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
                   )
                 }
                 disabled={isLoading}
-                className="w-full flex items-center justify-between p-2.5 rounded-xl border border-border bg-background hover:bg-accent text-left text-xs font-semibold cursor-pointer disabled:opacity-50"
+                className="w-full flex items-center justify-between p-2.5 rounded-md border border-border bg-background hover:bg-accent text-left text-xs font-semibold cursor-pointer disabled:opacity-50"
               >
                 <span>📊 Entrar como Administrador</span>
                 <span className="text-[8px] uppercase font-bold text-secondary bg-secondary/10 px-2 py-0.5 rounded border border-secondary/20">
@@ -283,7 +283,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="ejemplo@talitakum.cl"
-                  className="w-full rounded-xl border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+                  className="w-full rounded-md border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
                   required
                 />
               </div>
@@ -315,7 +315,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+                  className="w-full rounded-md border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
                   required
                 />
               </div>
@@ -324,7 +324,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 mt-2 font-bold cursor-pointer"
+              className="w-full rounded-md bg-primary text-primary-foreground hover:bg-primary/90 mt-2 font-bold cursor-pointer"
             >
               {isLoading ? 'Ingresando...' : 'Iniciar Sesión'}
             </Button>
@@ -348,7 +348,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Psi. Juan Gómez"
-                className="w-full rounded-xl border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+                className="w-full rounded-md border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
                 required
               />
             </div>
@@ -367,7 +367,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="ejemplo@talitakum.cl"
-                className="w-full rounded-xl border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+                className="w-full rounded-md border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
                 required
               />
             </div>
@@ -386,7 +386,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+                className="w-full rounded-md border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
                 required
               />
             </div>
@@ -399,7 +399,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as any)}
-              className="w-full rounded-xl border border-input bg-background p-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+              className="w-full rounded-md border border-input bg-background p-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
             >
               <option value="terapeuta">Terapeuta Clínico</option>
               <option value="admin">Administrador (Directiva)</option>
@@ -409,7 +409,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 mt-2 font-bold cursor-pointer"
+            className="w-full rounded-md bg-primary text-primary-foreground hover:bg-primary/90 mt-2 font-bold cursor-pointer"
           >
             {isLoading ? 'Registrando...' : 'Registrar Cuenta'}
           </Button>
@@ -432,7 +432,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="ingresa@talitakum.cl"
-                className="w-full rounded-xl border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+                className="w-full rounded-md border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
                 required
               />
             </div>
@@ -441,7 +441,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 mt-2 font-bold cursor-pointer"
+            className="w-full rounded-md bg-primary text-primary-foreground hover:bg-primary/90 mt-2 font-bold cursor-pointer"
           >
             {isLoading ? 'Enviando...' : 'Enviar Correo de Recuperación'}
           </Button>
@@ -493,7 +493,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
         </button>
       )}
 
-      <div className="mt-6 flex items-start gap-2 text-[10px] text-muted-foreground bg-muted/40 p-3 rounded-xl border border-border/30">
+      <div className="mt-6 flex items-start gap-2 text-[10px] text-muted-foreground bg-muted/40 p-3 rounded-md border border-border/30">
         <Info className="w-4 h-4 text-primary shrink-0" />
         <span>
           {view === 'forgot'

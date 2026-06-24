@@ -338,12 +338,16 @@ export default function AppHome() {
     );
   }
 
+  const containerMaxWidth = (currentView === 'dashboard' || currentView === 'users')
+    ? 'max-w-6xl'
+    : 'max-w-xl';
+
   return (
     <div className="flex-1 bg-background text-foreground flex flex-col min-h-screen transition-colors duration-200">
       
       {/* Header Corporativo Móvil */}
       <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 py-4 px-6 shadow-sm backdrop-blur-md">
-        <div className="mx-auto max-w-lg flex items-center justify-between">
+        <div className={`mx-auto flex items-center justify-between w-full ${containerMaxWidth}`}>
           <div className="flex items-center gap-2">
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground font-black text-xs shadow-md">
               TK
@@ -365,7 +369,7 @@ export default function AppHome() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setCurrentView('record')}
-                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-muted-foreground"
+                    className="p-2 h-8 rounded-md cursor-pointer hover:bg-muted text-xs text-muted-foreground"
                     title="Ir a Grabación"
                   >
                     <Mic className="w-4 h-4 mr-1" /> Dictar
@@ -376,7 +380,7 @@ export default function AppHome() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setCurrentView('dashboard')}
-                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-secondary font-bold"
+                    className="p-2 h-8 rounded-md cursor-pointer hover:bg-muted text-xs text-secondary font-bold"
                     title="Ir a Dashboard"
                   >
                     <LayoutDashboard className="w-4 h-4 mr-1" /> KPIs
@@ -387,7 +391,7 @@ export default function AppHome() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setCurrentView('users')}
-                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-secondary font-bold"
+                    className="p-2 h-8 rounded-md cursor-pointer hover:bg-muted text-xs text-secondary font-bold"
                     title="Ir a Usuarios"
                   >
                     <Shield className="w-4 h-4 mr-1" /> Usuarios
@@ -401,7 +405,7 @@ export default function AppHome() {
                 variant="ghost"
                 size="sm"
                 onClick={installApp}
-                className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-secondary font-bold flex items-center gap-1"
+                className="p-2 h-8 rounded-md cursor-pointer hover:bg-muted text-xs text-secondary font-bold flex items-center gap-1"
                 title="Instalar Aplicación"
               >
                 <Download className="w-4 h-4" /> Instalar App
@@ -412,7 +416,7 @@ export default function AppHome() {
               variant="ghost"
               size="icon"
               onClick={handleLogout}
-              className="w-8 h-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
+              className="w-8 h-8 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
               title="Cerrar Sesión"
             >
               <LogOut className="w-4 h-4" />
@@ -422,10 +426,10 @@ export default function AppHome() {
       </header>
 
       {/* Cuerpo Principal */}
-      <main className="flex-1 max-w-lg w-full mx-auto px-4 py-6 flex flex-col gap-6">
+      <main className={`flex-1 w-full mx-auto px-4 py-6 flex flex-col gap-6 ${containerMaxWidth}`}>
         
         {/* Perfil de Usuario Logueado (Mini banner) */}
-        <div className="flex justify-between items-center text-[10px] text-muted-foreground bg-muted/30 border border-border p-2.5 rounded-xl">
+        <div className="flex justify-between items-center text-[10px] text-muted-foreground bg-muted/30 border border-border p-2.5 rounded-lg">
           <span>Identificado como: <strong>{user.name}</strong></span>
           <span className="flex items-center gap-1">
             {isOffline ? (
@@ -439,7 +443,7 @@ export default function AppHome() {
 
         {/* Banner de Estado */}
         {statusMessage && (
-          <div className="rounded-xl bg-card border border-border p-3 text-xs font-semibold shadow-md flex items-center justify-between">
+          <div className="rounded-lg bg-card border border-border p-3 text-xs font-semibold shadow-md flex items-center justify-between">
             <span>{statusMessage}</span>
             <button 
               onClick={() => setStatusMessage('')} 
@@ -463,7 +467,7 @@ export default function AppHome() {
                   onProcessingError={handleProcessingError}
                 />
               ) : (
-                <div className="w-full bg-card border border-border p-8 rounded-2xl text-center flex flex-col items-center gap-3">
+                <div className="w-full bg-card border border-border p-8 rounded-lg text-center flex flex-col items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400">
                     <Lock className="w-6 h-6" />
                   </div>
@@ -536,7 +540,7 @@ export default function AppHome() {
                 <span>Cargando historial...</span>
               </div>
             ) : interventionsList.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-border p-8 text-center text-xs text-muted-foreground">
+              <div className="rounded-lg border border-dashed border-border p-8 text-center text-xs text-muted-foreground">
                 No hay intervenciones registradas. Tu primera grabación aparecerá aquí.
               </div>
             ) : (
@@ -560,7 +564,7 @@ export default function AppHome() {
                   return (
                     <div
                       key={item.id}
-                      className={`rounded-2xl border bg-card p-4 shadow-sm text-[11px] relative overflow-hidden ${
+                      className={`rounded-lg border bg-card p-4 shadow-sm text-[11px] relative overflow-hidden ${
                         tieneAlerta ? 'border-destructive/30' : 'border-border'
                       }`}
                     >
