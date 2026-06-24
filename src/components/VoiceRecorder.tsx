@@ -36,6 +36,13 @@ export function VoiceRecorder({
   const [keyboardMode, setKeyboardMode] = useState(false);
   const [manualText, setManualText] = useState('');
   const [offlineStatus, setOfflineStatus] = useState<string | null>(null);
+  const [consentGranted, setConsentGranted] = useState(false); // Consentimiento verbal obligatorio
+
+  const handleReset = () => {
+    resetRecorder();
+    setConsentGranted(false);
+  };
+
 
   // 1. Detectar conectividad en tiempo real
   useEffect(() => {
@@ -115,25 +122,7 @@ export function VoiceRecorder({
 
         result = transcriptor.estructurarTexto(mockDictation);
         transcriptionText = mockDictation;
-
-        const offlineRecord = {
-          id: crypto.randomUUID(),
-          terapeutaId: 'terapeuta-1',
-          pacienteId: 'paciente-1',
-          fechaIntervencion: new Date().toISOString(),
-          objetivo: result.objetivo,
-          desarrollo: result.desarrollo,
-          acuerdos: result.acuerdos,
-          accionesSeguir: result.accionesSeguir,
-          observaciones: result.observaciones,
-          validadoPorTerapeuta: false,
-          estadoSincronizacion: 'offline' as const,
-          fechaCreacion: new Date().toISOString(),
-          audioBlob: blobToProcess,
-        };
-
-        await guardarIntervencionOffline(offlineRecord);
-        setOfflineStatus('💾 Sin conexión: Grabación y estructuración guardadas localmente en IndexedDB.');
+        setOfflineStatus('💾 Sin conexión: Procesamiento simulado localmente. Los datos se guardarán en el móvil al validar.');
       }
 
       onProcessingComplete(result, blobToProcess, transcriptionText);
@@ -175,23 +164,7 @@ export function VoiceRecorder({
       const result = transcriptor.estructurarTexto(manualText);
 
       if (!isOnline) {
-        const offlineRecord = {
-          id: crypto.randomUUID(),
-          terapeutaId: 'terapeuta-1',
-          pacienteId: 'paciente-1',
-          fechaIntervencion: new Date().toISOString(),
-          objetivo: result.objetivo,
-          desarrollo: result.desarrollo,
-          acuerdos: result.acuerdos,
-          accionesSeguir: result.accionesSeguir,
-          observaciones: result.observaciones,
-          validadoPorTerapeuta: false,
-          estadoSincronizacion: 'offline' as const,
-          fechaCreacion: new Date().toISOString(),
-        };
-
-        await guardarIntervencionOffline(offlineRecord);
-        setOfflineStatus('💾 Sin conexión: Texto libre guardado y estructurado localmente en IndexedDB.');
+        setOfflineStatus('💾 Sin conexión: Procesamiento simulado localmente. Los datos se guardarán en el móvil al validar.');
       }
       onProcessingComplete(result, null, manualText);
     } catch (err: any) {
@@ -228,7 +201,7 @@ export function VoiceRecorder({
           size="sm"
           onClick={() => {
             setKeyboardMode(!keyboardMode);
-            resetRecorder();
+            handleReset();
             setManualText('');
           }}
           className="rounded-md h-8 text-[11px] font-extrabold cursor-pointer border border-border bg-background"
@@ -283,7 +256,7 @@ export function VoiceRecorder({
                 </p>
               </div>
             ) : (
-              <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center gap-4 w-full">
                 {audioUrl ? (
                   <div className="w-full flex flex-col items-center gap-4">
                     <div className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
@@ -294,7 +267,7 @@ export function VoiceRecorder({
                     <div className="flex gap-3 w-full max-w-xs mt-2">
                       <Button
                         variant="outline"
-                        onClick={resetRecorder}
+                        onClick={handleReset}
                         className="flex-1 rounded-md cursor-pointer"
                       >
                         Descartar
@@ -309,11 +282,31 @@ export function VoiceRecorder({
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center gap-4">
+                  <div className="flex flex-col items-center gap-4 w-full">
+                    {/* Checkbox de Consentimiento Verbal Obligatorio */}
+                    <label className="flex items-start gap-2.5 rounded-lg border border-border bg-muted/40 p-3 max-w-xs text-left cursor-pointer transition-all hover:bg-muted/70 select-none mb-2">
+                      <div className="flex h-5 items-center">
+                        <input
+                          type="checkbox"
+                          checked={consentGranted}
+                          onChange={(e) => setConsentGranted(e.target.checked)}
+                          className="h-4.5 w-4.5 rounded border-input text-primary focus:ring-ring cursor-pointer bg-background"
+                        />
+                      </div>
+                      <span className="text-[11px] font-semibold text-muted-foreground leading-snug">
+                        Confirmo consentimiento verbal (si la persona usuaria está presente)
+                      </span>
+                    </label>
+
                     <button
                       onClick={startRecording}
-                      className="flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-tr from-secondary to-accent text-white transition-all shadow-[0_10px_25px_rgba(224,90,54,0.3)] hover:shadow-[0_10px_30px_rgba(224,90,54,0.5)] hover:scale-105 active:scale-95 border-4 border-background cursor-pointer"
-                      title="Grabar intervención"
+                      disabled={!consentGranted}
+                      className={`flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-tr from-secondary to-accent text-white transition-all border-4 border-background ${
+                        consentGranted
+                          ? 'shadow-[0_10px_25px_rgba(224,90,54,0.3)] hover:shadow-[0_10px_30px_rgba(224,90,54,0.5)] hover:scale-105 active:scale-95 cursor-pointer'
+                          : 'opacity-40 cursor-not-allowed'
+                      }`}
+                      title={consentGranted ? "Grabar intervención" : "Se requiere consentimiento verbal"}
                     >
                       <Mic className="w-12 h-12" />
                     </button>
@@ -328,6 +321,7 @@ export function VoiceRecorder({
           </div>
         </>
       )}
+
 
       {/* VISTA 2: REGISTRO POR TECLADO (TEXTO LIBRE) */}
       {keyboardMode && (
