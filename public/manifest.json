@@ -1,0 +1,19 @@
+{
+  "name": "Talita Kum Clinica",
+  "short_name": "Talita Kum",
+  "description": "Sistema de registro de intervenciones clínicas Talita Kum",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "categories": ["medical", "productivity"],
+  "icons": [
+    {
+      "src": "/clinic_logo.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -342,3 +342,55 @@ export async function obtenerIntervenciones() {
     return [];
   }
 }
+
+// ==========================================
+// ACCIONES DE GESTIÓN DE USUARIOS Y PERMISOS
+// ==========================================
+
+export async function obtenerUsuarios() {
+  try {
+    const lista = await db.select().from(user);
+    return { success: true, users: lista };
+  } catch (error: any) {
+    console.error('Error al obtener usuarios:', error);
+    return { success: false, error: error.message || 'Error al obtener usuarios' };
+  }
+}
+
+export async function actualizarUsuarioPermisos(
+  userId: string,
+  data: {
+    role: 'terapeuta' | 'admin';
+    canRecord: boolean;
+    canViewDashboard: boolean;
+    isBanned: boolean;
+  }
+) {
+  try {
+    await db
+      .update(user)
+      .set({
+        role: data.role,
+        canRecord: data.canRecord,
+        canViewDashboard: data.canViewDashboard,
+        isBanned: data.isBanned,
+        updatedAt: new Date(),
+      })
+      .where(eq(user.id, userId));
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error al actualizar permisos:', error);
+    return { success: false, error: error.message || 'Error al actualizar permisos' };
+  }
+}
+
+export async function eliminarUsuario(userId: string) {
+  try {
+    await db.delete(user).where(eq(user.id, userId));
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error al eliminar usuario:', error);
+    return { success: false, error: error.message || 'Error al eliminar usuario' };
+  }
+}
+

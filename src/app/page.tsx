@@ -10,13 +10,18 @@ export interface LoggedInUser {
   name: string;
   email: string;
   role: 'terapeuta' | 'admin';
+  canRecord: boolean;
+  canViewDashboard: boolean;
+  isBanned: boolean;
 }
 import { Dashboard } from '@/components/Dashboard';
+import { UsersManagement } from '@/components/UsersManagement';
 import { StructuredIntervention } from '@/lib/transcription';
-import { Wifi, WifiOff, RefreshCw, CheckCircle2, LogOut, LayoutDashboard, Mic } from 'lucide-react';
+import { Wifi, WifiOff, RefreshCw, CheckCircle2, LogOut, LayoutDashboard, Mic, Download, Shield, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
+import { usePWA } from '@/components/PWAProvider';
 import {
   obtenerPacientes,
   obtenerTerapeutas,
@@ -31,11 +36,47 @@ import {
 } from '@/lib/indexedDb';
 
 export default function AppHome() {
+  const { isInstallable, isInstalled, installApp } = usePWA();
   // Estado de Autenticación
   const [user, setUser] = useState<LoggedInUser | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // 0. Cargar la sesión activa en el montaje de la app
+  useEffect(() => {
+    async function loadActiveSession() {
+      try {
+        const res = await authClient.getSession();
+        if (res?.data?.user) {
+          const u = res.data.user as any;
+          if (u.isBanned) {
+            await authClient.signOut();
+            toast.error("Acceso Denegado", {
+              description: "Tu cuenta ha sido desactivada por la administración.",
+            });
+            setUser(null);
+            return;
+          }
+          setUser({
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            role: u.role || 'terapeuta',
+            canRecord: u.canRecord !== false,
+            canViewDashboard: u.canViewDashboard === true,
+            isBanned: u.isBanned === true,
+          });
+        }
+      } catch (error) {
+        console.error('Error al restaurar sesión:', error);
+      } finally {
+        setAuthLoading(false);
+      }
+    }
+    loadActiveSession();
+  }, []);
 
   // Estado de flujo de vistas
-  const [currentView, setCurrentView] = useState<'record' | 'validate' | 'dashboard'>('record');
+  const [currentView, setCurrentView] = useState<'record' | 'validate' | 'dashboard' | 'users'>('record');
 
   // Datos de trabajo
   const [patients, setPatients] = useState<any[]>([]);
@@ -256,12 +297,39 @@ export default function AppHome() {
     setAudioBlob(null);
   };
 
+  // Si está cargando la sesión, mostrar pantalla de carga
+  if (authLoading) {
+    return (
+      <div className="flex-1 bg-background text-foreground flex flex-col items-center justify-center min-h-screen px-4 gap-3">
+        <RefreshCw className="w-8 h-8 animate-spin text-primary" />
+        <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider animate-pulse">
+          Restaurando sesión segura...
+        </span>
+      </div>
+    );
+  }
+
   // Si no está logueado, mostrar la pantalla de Login
   if (!user) {
     return (
       <div className="flex-1 bg-background text-foreground flex items-center justify-center min-h-screen px-4">
         <Login onLoginSuccess={(u) => {
-          setUser(u);
+          if (u.isBanned) {
+            toast.error("Acceso Denegado", {
+              description: "Tu cuenta ha sido desactivada por la administración.",
+            });
+            authClient.signOut();
+            return;
+          }
+          setUser({
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            role: u.role || 'terapeuta',
+            canRecord: u.canRecord !== false,
+            canViewDashboard: u.canViewDashboard === true,
+            isBanned: u.isBanned === true,
+          });
           toast.success("Sesión Iniciada", {
             description: `Bienvenido, ${u.name}. Rol: ${u.role === 'admin' ? 'Administrador' : 'Terapeuta'}.`,
           });
@@ -292,17 +360,18 @@ export default function AppHome() {
           <div className="flex items-center gap-2">
             {user.role === 'admin' && (
               <>
-                {currentView === 'dashboard' ? (
+                {currentView !== 'record' && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setCurrentView('record')}
-                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs"
+                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-muted-foreground"
                     title="Ir a Grabación"
                   >
                     <Mic className="w-4 h-4 mr-1" /> Dictar
                   </Button>
-                ) : (
+                )}
+                {currentView !== 'dashboard' && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -313,7 +382,30 @@ export default function AppHome() {
                     <LayoutDashboard className="w-4 h-4 mr-1" /> KPIs
                   </Button>
                 )}
+                {currentView !== 'users' && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setCurrentView('users')}
+                    className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-indigo-600 dark:text-indigo-400 font-bold"
+                    title="Ir a Usuarios"
+                  >
+                    <Shield className="w-4 h-4 mr-1" /> Usuarios
+                  </Button>
+                )}
               </>
+            )}
+
+            {!isInstalled && isInstallable && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={installApp}
+                className="p-2 h-8 rounded-xl cursor-pointer hover:bg-muted text-xs text-indigo-600 dark:text-indigo-400 font-bold flex items-center gap-1"
+                title="Instalar Aplicación"
+              >
+                <Download className="w-4 h-4" /> Instalar App
+              </Button>
             )}
 
             <Button
@@ -364,11 +456,23 @@ export default function AppHome() {
           {currentView === 'record' && (
             /* PASO 1: GRABADOR DE VOZ (TERAPEUTA & ADMIN) */
             <div className="w-full flex flex-col items-center gap-6 py-4 animate-in fade-in duration-300">
-              <VoiceRecorder
-                onProcessingStart={handleProcessingStart}
-                onProcessingComplete={handleProcessingComplete}
-                onProcessingError={handleProcessingError}
-              />
+              {user.canRecord ? (
+                <VoiceRecorder
+                  onProcessingStart={handleProcessingStart}
+                  onProcessingComplete={handleProcessingComplete}
+                  onProcessingError={handleProcessingError}
+                />
+              ) : (
+                <div className="w-full bg-card border border-border p-8 rounded-2xl text-center flex flex-col items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                    <Lock className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-sm font-extrabold text-foreground">Acceso de Grabación Inhabilitado</h3>
+                  <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+                    Tu cuenta no cuenta con autorización para registrar nuevos dictados. Comunícate con la directiva para actualizar tus permisos de usuario.
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -396,6 +500,16 @@ export default function AppHome() {
             <div className="w-full animate-in fade-in duration-300">
               <Dashboard
                 interventions={interventionsList}
+                onBack={() => setCurrentView('record')}
+              />
+            </div>
+          )}
+
+          {currentView === 'users' && user.role === 'admin' && (
+            /* PASO 4: GESTIÓN DE USUARIOS Y PERMISOS DE LA CLÍNICA */
+            <div className="w-full animate-in fade-in duration-300">
+              <UsersManagement
+                currentUser={user}
                 onBack={() => setCurrentView('record')}
               />
             </div>

@@ -51,12 +51,39 @@ export const auth = betterAuth({
     },
   },
   secret: process.env.BETTER_AUTH_SECRET || 'a-very-secure-hackaton-secret-key-1234567890',
+  session: {
+    expiresIn: 30 * 24 * 60 * 60, // 30 días de duración de la sesión
+    updateAge: 24 * 60 * 60, // Actualizar en base de datos máximo una vez cada 24 horas
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // Evitar consultas repetitivas de sesión a la base de datos (5 minutos)
+    },
+  },
+  advanced: {
+    defaultCookieAttributes: {
+      httpOnly: true, // XSS Prevention
+      secure: process.env.NODE_ENV === 'production', // Solo HTTPS en producción
+      sameSite: 'lax', // CSRF Protection permitiendo redirecciones e instalación PWA
+    },
+  },
   // Configuración de perfiles y roles personalizados
   user: {
     additionalFields: {
       role: {
         type: 'string',
         defaultValue: 'terapeuta',
+      },
+      canRecord: {
+        type: 'boolean',
+        defaultValue: true,
+      },
+      canViewDashboard: {
+        type: 'boolean',
+        defaultValue: false,
+      },
+      isBanned: {
+        type: 'boolean',
+        defaultValue: false,
       },
     },
   },

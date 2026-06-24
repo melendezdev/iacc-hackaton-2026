@@ -15,6 +15,10 @@ export const user = sqliteTable('user', {
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
   // Rol personalizado para control de acceso en la clínica
   role: text('role').notNull().default('terapeuta'), // 'terapeuta' | 'admin'
+  // Gestión de Permisos Detallada
+  canRecord: integer('can_record', { mode: 'boolean' }).notNull().default(true), // Permiso para registrar intervenciones
+  canViewDashboard: integer('can_view_dashboard', { mode: 'boolean' }).notNull().default(false), // Permiso para ver el dashboard de KPIs
+  isBanned: integer('is_banned', { mode: 'boolean' }).notNull().default(false), // Bloqueo total de acceso
 });
 
 export const session = sqliteTable('session', {

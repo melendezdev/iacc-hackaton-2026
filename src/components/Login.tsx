@@ -3,14 +3,16 @@
 import React, { useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
-import { Shield, User, Key, Info, UserPlus, HelpCircle, ArrowLeft } from 'lucide-react';
+import { Shield, User, Key, Info, UserPlus, HelpCircle, ArrowLeft, Download } from 'lucide-react';
 import { toast } from 'sonner';
+import { usePWA } from '@/components/PWAProvider';
 
 interface LoginProps {
   onLoginSuccess: (user: any) => void;
 }
 
 export function Login({ onLoginSuccess }: LoginProps) {
+  const { isInstallable, isInstalled, installApp } = usePWA();
   const [view, setView] = useState<'login' | 'signup' | 'forgot'>('login');
   
   // Inputs del formulario
@@ -479,6 +481,16 @@ export function Login({ onLoginSuccess }: LoginProps) {
             )}
           </button>
         </div>
+      )}
+
+      {!isInstalled && isInstallable && (
+        <button
+          type="button"
+          onClick={installApp}
+          className="w-full text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center justify-center gap-1.5 mt-4 cursor-pointer"
+        >
+          <Download className="w-3.5 h-3.5 animate-pulse" /> Instalar aplicación en este dispositivo
+        </button>
       )}
 
       <div className="mt-6 flex items-start gap-2 text-[10px] text-muted-foreground bg-muted/40 p-3 rounded-xl border border-border/30">
