@@ -17,8 +17,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { PWAProvider } from "@/components/PWAProvider";
 
 export const metadata: Metadata = {
-  title: "Talita Kum Clínica",
-  description: "Sistema de registro de intervenciones clínicas Talita Kum",
+  title: "Grupo 1 - Hackaton 2026",
+  description: "Sistema de registro de intervenciones clínicas - Fundación Cristo Vive",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
