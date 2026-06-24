@@ -140,7 +140,7 @@ export function ValidationForm({
       onSubmit={handleSubmit}
       className="w-full rounded-lg border border-border bg-card p-6 shadow-xl text-card-foreground"
     >
-      <div className="flex items-center justify-between border-b border-border pb-4 mb-6">
+      <div className="flex flex-col-reverse items-start justify-between border-b border-border pb-4 mb-6 gap-1">
         <div>
           <h2 className="text-lg font-bold text-foreground">
             Revisión y Validación de la Intervención
@@ -149,15 +149,6 @@ export function ValidationForm({
             La IA ha pre-llenado el formulario. Revisa, edita los campos y valida para guardar.
           </p>
         </div>
-        {isOffline ? (
-          <span className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-semibold text-secondary border border-secondary/20">
-            ⚠️ Modo Offline Activo
-          </span>
-        ) : (
-          <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent border border-accent/20">
-            ✓ En Línea (Sincronizado)
-          </span>
-        )}
       </div>
 
       {/* Alerta Clínica Dinámica */}
@@ -184,12 +175,12 @@ export function ValidationForm({
           <select
             value={selectedTherapist}
             onChange={(e) => setSelectedTherapist(e.target.value)}
-            className="w-full rounded-md border border-input bg-background p-3 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring text-foreground"
+            className="w-full rounded-md border border-input bg-background p-3 text-sm text-foreground! outline-none focus:border-ring focus:ring-1 focus:ring-ring"
             required
           >
             <option value="">Selecciona tu nombre...</option>
             {therapists.map((t) => (
-              <option key={t.id} value={t.id}>
+              <option key={t.id} value={t.id} className='text-foreground!'>
                 {t.nombre}
               </option>
             ))}
@@ -297,7 +288,7 @@ export function ValidationForm({
           </div>
           <div className="text-sm">
             <span className="font-bold text-foreground block">
-              🛡️ Regla de Oro: Certificación Profesional
+              Importante*
             </span>
             <span className="text-xs text-muted-foreground">
               Confirmo que he revisado minuciosamente y valido que esta información estructurada por IA refleja fielmente lo ocurrido y las decisiones tomadas durante la intervención clínica.

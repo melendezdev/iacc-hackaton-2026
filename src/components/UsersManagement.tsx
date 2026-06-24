@@ -1,15 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Shield, 
-  User as UserIcon, 
   UserMinus, 
   Save, 
   ArrowLeft, 
   Search, 
-  Lock, 
-  Unlock, 
   RefreshCw, 
   AlertTriangle,
   ChevronLeft,
@@ -181,7 +178,7 @@ export function UsersManagement({ currentUser, onBack }: UsersManagementProps) {
           <div>
             <h2 className="text-sm font-extrabold tracking-tight">Gestión de Usuarios</h2>
             <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
-              Control de Accesos y Permisos Clínicos
+              Control de Accesos y Permisos
             </p>
           </div>
         </div>

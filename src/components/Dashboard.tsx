@@ -3,7 +3,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
-  Activity,
   AlertTriangle,
   Clock,
   TrendingUp,

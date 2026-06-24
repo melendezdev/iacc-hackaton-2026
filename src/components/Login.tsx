@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Shield, User, Key, Info, ArrowLeft, Download } from 'lucide-react';
-import { toast } from 'sonner';
 import { usePWA } from '@/components/PWAProvider';
 
 interface LoginProps {
@@ -78,70 +77,23 @@ export function Login({ onLoginSuccess }: LoginProps) {
     <div className="relative w-full max-w-md mx-auto rounded-lg border border-border bg-card p-6 shadow-xl text-card-foreground overflow-hidden">
       {/* Decorative gradient top bar linking Cristo Vive (secondary) and Talita Kum (accent) */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-secondary via-primary to-accent" />
-      
-      {/* Logos y mención de las dos fundaciones (Presentación Profesional y Estética) */}
-      <div className="flex flex-col items-center mb-6 pt-2 pb-5 border-b border-border/80">
-        <div className="flex items-center justify-between gap-4 w-full px-2">
-          
-          {/* Fundación Cristo Vive */}
-          <div className="flex flex-col items-center text-center gap-2 flex-1">
-            <div className="w-16 h-16 rounded-md border border-border/50 flex items-center justify-center bg-white shadow-sm p-1.5 transition-transform duration-300 hover:scale-105 shrink-0">
-              <img 
-                src="/cristo_vive_logo.png" 
-                alt="Fundación Cristo Vive" 
-                className="w-full h-full object-contain" 
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[9px] font-black uppercase text-muted-foreground tracking-wider leading-none">Fundación</span>
-              <span className="text-[11px] font-bold text-foreground tracking-tight leading-tight mt-0.5">Cristo Vive</span>
-            </div>
-          </div>
-
-          {/* Connection Divider */}
-          <div className="flex flex-col items-center justify-center shrink-0">
-            <span className="text-[9px] font-black text-muted-foreground/60 uppercase tracking-widest px-2.5 py-1 rounded bg-muted border border-border/30 leading-none">
-              Y
-            </span>
-          </div>
-
-          {/* Fundación Talita Kum */}
-          <div className="flex flex-col items-center text-center gap-2 flex-1">
-            <div className="w-16 h-16 rounded-md border border-border/50 flex items-center justify-center bg-white shadow-sm p-1 transition-transform duration-300 hover:scale-105 shrink-0">
-              <img 
-                src="/clinic_logo.jpg" 
-                alt="Fundación Talita Kum" 
-                className="w-full h-full object-contain" 
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[9px] font-black uppercase text-muted-foreground tracking-wider leading-none">Fundación</span>
-              <span className="text-[11px] font-bold text-foreground tracking-tight leading-tight mt-0.5">Talita Kum</span>
-            </div>
-          </div>
-          
-        </div>
-        
-        {/* Collaborative Indicator badge */}
-        <div className="mt-4 px-3 py-1 rounded bg-muted/60 border border-border/40 text-center">
-          <p className="text-[10px] text-muted-foreground font-bold tracking-wide uppercase leading-none">
-            Registro Clínico Interoperable
-          </p>
-        </div>
-      </div>
 
       {/* Encabezado del Formulario */}
       <div className="flex flex-col items-center text-center mb-6">
         <div className="w-10 h-10 rounded bg-primary text-primary-foreground flex items-center justify-center shadow mb-2.5">
-          <Shield className="w-5 h-5" />
+          <img 
+            src="/cristo_vive_logo.png" 
+            alt="Fundación Cristo Vive" 
+            className="w-full h-full object-contain" 
+          />
         </div>
         <h2 className="text-sm font-extrabold tracking-tight">
-          {view === 'forgot' ? 'Recuperar Contraseña' : 'Acceso Clínico'}
+          {view === 'forgot' ? 'Recuperar Contraseña' : 'Fundación Cristo Vive'}
         </h2>
         <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-0.5">
           {view === 'forgot'
             ? 'Ingresa tu correo para recibir un enlace de recuperación'
-            : 'Firma de Intervenciones Clínicas'}
+            : 'Grupo 1 - IACC Hackaton 2026'}
         </p>
       </div>
 
@@ -215,7 +167,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
           {/* Banner de Credenciales para la Demo (Discreto y Elegante) */}
           <div className="rounded-md border border-border bg-muted/40 p-3 text-[10px] space-y-2 mt-2">
             <p className="font-bold text-foreground flex items-center gap-1.5 leading-none">
-              🔑 Cuentas Semilla Registradas:
+              🔑 Cuentas para la demo:
             </p>
             <div className="grid grid-cols-2 gap-2">
               <div className="bg-background/80 p-2 rounded border border-border/60">
@@ -234,7 +186,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full rounded-md bg-primary text-primary-foreground hover:bg-primary/95 mt-2 font-bold cursor-pointer"
+            className="w-full rounded-md bg-primary text-primary-foreground hover:bg-primary/95 mt-2 font-bold cursor-pointer py-5!"
           >
             {isLoading ? 'Ingresando...' : 'Iniciar Sesión'}
           </Button>

@@ -17,7 +17,7 @@ export interface LoggedInUser {
 import { Dashboard } from '@/components/Dashboard';
 import { UsersManagement } from '@/components/UsersManagement';
 import { StructuredIntervention } from '@/lib/transcription';
-import { Wifi, WifiOff, RefreshCw, CheckCircle2, LogOut, LayoutDashboard, Mic, Download, Shield, Lock } from 'lucide-react';
+import { RefreshCw, CheckCircle2, LogOut, LayoutDashboard, Mic, Download, Shield, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
@@ -426,7 +426,7 @@ export default function AppHome() {
       </header>
 
       {/* Cuerpo Principal */}
-      <main className={`flex-1 w-full mx-auto px-4 py-6 flex flex-col gap-6 ${containerMaxWidth}`}>
+      <main className={`w-full mx-auto px-4 py-6 flex flex-col gap-6 ${containerMaxWidth}`}>
         
         {/* Perfil de Usuario Logueado (Mini banner) */}
         <div className="flex justify-between items-center text-[10px] text-muted-foreground bg-muted/30 border border-border p-2.5 rounded-lg">
