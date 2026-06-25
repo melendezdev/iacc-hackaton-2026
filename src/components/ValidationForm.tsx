@@ -1,15 +1,23 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { StructuredIntervention } from '@/lib/transcription';
-import { OfflineIntervention, guardarIntervencionOffline } from '@/lib/indexedDb';
-import { guardarIntervencion } from '@/app/actions';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect } from "react";
+import { StructuredIntervention } from "@/lib/transcription";
+import {
+  OfflineIntervention,
+  guardarIntervencionOffline,
+} from "@/lib/indexedDb";
+import { guardarIntervencion } from "@/app/actions";
+import { Button } from "@/components/ui/button";
 
 interface ValidationFormProps {
   prefilledData: StructuredIntervention;
   patients: Array<{ id: string; nombre: string; rut?: string | null }>;
-  therapists: Array<{ id: string; name?: string; nombre?: string; email?: string | null }>;
+  therapists: Array<{
+    id: string;
+    name?: string;
+    nombre?: string;
+    email?: string | null;
+  }>;
   audioBlob: Blob | null;
   isOffline: boolean;
   onSaveComplete: (savedRecord: any, isOfflineSaved: boolean) => void;
@@ -26,63 +34,82 @@ export function ValidationForm({
   onCancel,
 }: ValidationFormProps) {
   // Estados de los selectores obligatorios
-  const [selectedPatient, setSelectedPatient] = useState('');
-  const [selectedTherapist, setSelectedTherapist] = useState('');
+  const [selectedPatient, setSelectedPatient] = useState("");
+  const [selectedTherapist, setSelectedTherapist] = useState("");
 
   // Los 5 campos obligatorios editables
   const [objetivo, setObjetivo] = useState(prefilledData.objetivo);
   const [desarrollo, setDesarrollo] = useState(prefilledData.desarrollo);
   const [acuerdos, setAcuerdos] = useState(prefilledData.acuerdos);
-  const [accionesSeguir, setAccionesSeguir] = useState(prefilledData.accionesSeguir);
-  const [observaciones, setObservaciones] = useState(prefilledData.observaciones);
+  const [accionesSeguir, setAccionesSeguir] = useState(
+    prefilledData.accionesSeguir,
+  );
+  const [observaciones, setObservaciones] = useState(
+    prefilledData.observaciones,
+  );
 
   // La regla de oro (confirmación humana obligatoria)
   const [validadoPorTerapeuta, setValidadoPorTerapeuta] = useState(false);
 
   // Alertas clínicas en tiempo real
-  const [alertaClinica, setAlertaClinica] = useState<{ activa: boolean; mensaje: string }>({
+  const [alertaClinica, setAlertaClinica] = useState<{
+    activa: boolean;
+    mensaje: string;
+  }>({
     activa: false,
-    mensaje: '',
+    mensaje: "",
   });
 
   const [isSaving, setIsSaving] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
 
   // Analizar automáticamente el texto para detectar palabras clave críticas (Alertas)
   useEffect(() => {
     const textoCompleto = `${desarrollo} ${observaciones}`.toLowerCase();
-    const alertaRecaida = textoCompleto.includes('recaída') || textoCompleto.includes('consumo') || textoCompleto.includes('consumir');
-    const alertaCrisis = textoCompleto.includes('crisis') || textoCompleto.includes('suicida') || textoCompleto.includes('daño') || textoCompleto.includes('autolesi') || textoCompleto.includes('urgencia');
+    const alertaRecaida =
+      textoCompleto.includes("recaída") ||
+      textoCompleto.includes("consumo") ||
+      textoCompleto.includes("consumir");
+    const alertaCrisis =
+      textoCompleto.includes("crisis") ||
+      textoCompleto.includes("suicida") ||
+      textoCompleto.includes("daño") ||
+      textoCompleto.includes("autolesi") ||
+      textoCompleto.includes("urgencia");
 
     if (alertaCrisis) {
       setAlertaClinica({
         activa: true,
-        mensaje: '⚠️ URGENCIA EMOCIONAL DETECTADA: El texto sugiere ideación autolesiva, descompensación severa o crisis aguda. Requiere activar protocolo de emergencia.',
+        mensaje:
+          "⚠️ URGENCIA EMOCIONAL DETECTADA: El texto sugiere ideación autolesiva, descompensación severa o crisis aguda. Requiere activar protocolo de emergencia.",
       });
     } else if (alertaRecaida) {
       setAlertaClinica({
         activa: true,
-        mensaje: '⚠️ ALERTA DE RECAÍDA: Se mencionan gatillantes, deseos de consumo o vulnerabilidad inminente. Se sugiere derivar a monitoreo intensivo.',
+        mensaje:
+          "⚠️ ALERTA DE RECAÍDA: Se mencionan gatillantes, deseos de consumo o vulnerabilidad inminente. Se sugiere derivar a monitoreo intensivo.",
       });
     } else {
-      setAlertaClinica({ activa: false, mensaje: '' });
+      setAlertaClinica({ activa: false, mensaje: "" });
     }
   }, [desarrollo, observaciones]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg('');
+    setErrorMsg("");
 
     if (!selectedPatient) {
-      setErrorMsg('Debes seleccionar un paciente obligatoriamente.');
+      setErrorMsg("Debes seleccionar un paciente obligatoriamente.");
       return;
     }
     if (!selectedTherapist) {
-      setErrorMsg('Debes seleccionar tu nombre (terapeuta).');
+      setErrorMsg("Debes seleccionar tu nombre (terapeuta).");
       return;
     }
     if (!validadoPorTerapeuta) {
-      setErrorMsg('Por favor, marca la confirmación de validación (Regla de Oro). Tu criterio clínico es requerido.');
+      setErrorMsg(
+        "Por favor, marca la confirmación de validación (Regla de Oro). Tu criterio clínico es requerido.",
+      );
       return;
     }
 
@@ -108,7 +135,7 @@ export function ValidationForm({
           id: offlineId,
           ...recordData,
           audioBlob: audioBlob,
-          estadoSincronizacion: 'offline',
+          estadoSincronizacion: "offline",
           fechaCreacion: new Date().toISOString(),
         };
 
@@ -118,7 +145,7 @@ export function ValidationForm({
         // FLUJO ONLINE: Guardar directamente en la base de datos remota (Server Action)
         const response = await guardarIntervencion({
           ...recordData,
-          estadoSincronizacion: 'sincronizado',
+          estadoSincronizacion: "sincronizado",
         });
 
         if (response.success) {
@@ -128,8 +155,10 @@ export function ValidationForm({
         }
       }
     } catch (err: any) {
-      console.error('Error al guardar intervención:', err);
-      setErrorMsg(err.message || 'Error al guardar el registro. Inténtalo de nuevo.');
+      console.error("Error al guardar intervención:", err);
+      setErrorMsg(
+        err.message || "Error al guardar el registro. Inténtalo de nuevo.",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -146,7 +175,8 @@ export function ValidationForm({
             Revisión y Validación de la Intervención
           </h2>
           <p className="text-xs text-muted-foreground">
-            La IA ha pre-llenado el formulario. Revisa, edita los campos y valida para guardar.
+            La IA ha pre-llenado el formulario. Revisa, edita los campos y
+            valida para guardar.
           </p>
         </div>
       </div>
@@ -180,7 +210,7 @@ export function ValidationForm({
           >
             <option value="">Selecciona tu nombre...</option>
             {therapists.map((t) => (
-              <option key={t.id} value={t.id} className='text-foreground!'>
+              <option key={t.id} value={t.id} className="text-foreground!">
                 {t.name || t.nombre}
               </option>
             ))}
@@ -200,7 +230,7 @@ export function ValidationForm({
             <option value="">Selecciona paciente intervenido...</option>
             {patients.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.nombre} {p.rut ? `(${p.rut})` : ''}
+                {p.nombre} {p.rut ? `(${p.rut})` : ""}
               </option>
             ))}
           </select>
@@ -287,11 +317,11 @@ export function ValidationForm({
             />
           </div>
           <div className="text-sm">
-            <span className="font-bold text-foreground block">
-              Importante*
-            </span>
+            <span className="font-bold text-foreground block">Importante*</span>
             <span className="text-xs text-muted-foreground">
-              Confirmo que he revisado minuciosamente y valido que esta información estructurada por IA refleja fielmente lo ocurrido y las decisiones tomadas durante la intervención clínica.
+              Confirmo que he revisado minuciosamente y valido que esta
+              información estructurada por IA refleja fielmente lo ocurrido y
+              las decisiones tomadas durante la intervención clínica.
             </span>
           </div>
         </label>
@@ -313,7 +343,11 @@ export function ValidationForm({
           disabled={isSaving}
           className="rounded-md bg-primary text-primary-foreground hover:bg-primary/90 shadow-md cursor-pointer"
         >
-          {isSaving ? 'Guardando...' : isOffline ? 'Guardar en Celular (Offline) 💾' : 'Guardar y Subir a Nube ☁️'}
+          {isSaving
+            ? "Guardando..."
+            : isOffline
+              ? "Guardar en Celular (Offline) 💾"
+              : "Guardar y Subir a la Nube ☁️"}
         </Button>
       </div>
     </form>

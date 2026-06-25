@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { authClient } from '@/lib/auth-client';
-import { Button } from '@/components/ui/button';
-import { Shield, User, Key, Info, ArrowLeft, Download } from 'lucide-react';
-import { usePWA } from '@/components/PWAProvider';
+import React, { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { Shield, User, Key, Info, ArrowLeft, Download } from "lucide-react";
+import { usePWA } from "@/components/PWAProvider";
 
 interface LoginProps {
   onLoginSuccess: (user: any) => void;
@@ -12,22 +12,22 @@ interface LoginProps {
 
 export function Login({ onLoginSuccess }: LoginProps) {
   const { isInstallable, isInstalled, installApp } = usePWA();
-  const [view, setView] = useState<'login' | 'forgot'>('login');
-  
+  const [view, setView] = useState<"login" | "forgot">("login");
+
   // Inputs del formulario
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  
-  const [errorMsg, setErrorMsg] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Manejador de Login convencional
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrorMsg('');
-    setSuccessMsg('');
+    setErrorMsg("");
+    setSuccessMsg("");
 
     try {
       const response = await authClient.signIn.email({
@@ -36,7 +36,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
       });
 
       if (response.error) {
-        throw new Error(response.error.message || 'Credenciales inválidas.');
+        throw new Error(response.error.message || "Credenciales inválidas.");
       }
 
       if (response.data?.user) {
@@ -44,7 +44,9 @@ export function Login({ onLoginSuccess }: LoginProps) {
       }
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || 'Credenciales incorrectas o error de conexión.');
+      setErrorMsg(
+        err.message || "Credenciales incorrectas o error de conexión.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -54,20 +56,24 @@ export function Login({ onLoginSuccess }: LoginProps) {
   const handleForgetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrorMsg('');
-    setSuccessMsg('');
+    setErrorMsg("");
+    setSuccessMsg("");
 
     try {
       const response = await (authClient as any).forgetPassword({
         email,
-        redirectTo: '/reset-password',
+        redirectTo: "/reset-password",
       });
 
-      setSuccessMsg('✓ Correo enviado. Sigue el enlace en tu email para restablecer la contraseña.');
-      setEmail('');
+      setSuccessMsg(
+        "✓ Correo enviado. Sigue el enlace en tu email para restablecer la contraseña.",
+      );
+      setEmail("");
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || 'Error al solicitar el enlace de recuperación.');
+      setErrorMsg(
+        err.message || "Error al solicitar el enlace de recuperación.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -81,19 +87,19 @@ export function Login({ onLoginSuccess }: LoginProps) {
       {/* Encabezado del Formulario */}
       <div className="flex flex-col items-center text-center mb-6">
         <div className="w-10 h-10 rounded bg-primary text-primary-foreground flex items-center justify-center shadow mb-2.5">
-          <img 
-            src="/cristo_vive_logo.png" 
-            alt="Fundación Cristo Vive" 
-            className="w-full h-full object-contain" 
+          <img
+            src="/cristo_vive_logo.png"
+            alt="Fundación Cristo Vive"
+            className="w-full h-full object-contain"
           />
         </div>
         <h2 className="text-sm font-extrabold tracking-tight">
-          {view === 'forgot' ? 'Recuperar Contraseña' : 'Fundación Cristo Vive'}
+          {view === "forgot" ? "Recuperar Contraseña" : "Fundación Cristo Vive"}
         </h2>
         <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-0.5">
-          {view === 'forgot'
-            ? 'Ingresa tu correo para recibir un enlace de recuperación'
-            : 'Grupo 1 - IACC Hackaton 2026'}
+          {view === "forgot"
+            ? "Ingresa tu correo para recibir un enlace de recuperación"
+            : "Grupo 1 - IACC Hackaton 2026"}
         </p>
       </div>
 
@@ -111,7 +117,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
       )}
 
       {/* VISTA 1: INICIO DE SESIÓN */}
-      {view === 'login' && (
+      {view === "login" && (
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
@@ -140,9 +146,9 @@ export function Login({ onLoginSuccess }: LoginProps) {
               <button
                 type="button"
                 onClick={() => {
-                  setView('forgot');
-                  setErrorMsg('');
-                  setSuccessMsg('');
+                  setView("forgot");
+                  setErrorMsg("");
+                  setSuccessMsg("");
                 }}
                 className="text-xs font-bold text-secondary hover:underline cursor-pointer"
               >
@@ -165,7 +171,7 @@ export function Login({ onLoginSuccess }: LoginProps) {
           </div>
 
           {/* Banner de Credenciales para la Demo (Discreto y Elegante) */}
-          <div className="rounded-md border border-border bg-muted/40 p-3 text-[10px] space-y-2 mt-2">
+          {/*<div className="rounded-md border border-border bg-muted/40 p-3 text-[10px] space-y-2 mt-2">
             <p className="font-bold text-foreground flex items-center gap-1.5 leading-none">
               🔑 Cuentas para la demo:
             </p>
@@ -181,20 +187,20 @@ export function Login({ onLoginSuccess }: LoginProps) {
                 <span className="font-mono text-[9px] text-muted-foreground block mt-0.5">Pass: PasswordDemo123!</span>
               </div>
             </div>
-          </div>
+          </div>*/}
 
           <Button
             type="submit"
             disabled={isLoading}
             className="w-full rounded-md bg-primary text-primary-foreground hover:bg-primary/95 mt-2 font-bold cursor-pointer py-5!"
           >
-            {isLoading ? 'Ingresando...' : 'Iniciar Sesión'}
+            {isLoading ? "Ingresando..." : "Iniciar Sesión"}
           </Button>
         </form>
       )}
 
       {/* VISTA 2: OLVIDÉ MI CONTRASEÑA */}
-      {view === 'forgot' && (
+      {view === "forgot" && (
         <form onSubmit={handleForgetPassword} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
@@ -220,15 +226,15 @@ export function Login({ onLoginSuccess }: LoginProps) {
             disabled={isLoading}
             className="w-full rounded-md bg-primary text-primary-foreground hover:bg-primary/95 mt-2 font-bold cursor-pointer"
           >
-            {isLoading ? 'Enviando...' : 'Enviar Correo de Recuperación'}
+            {isLoading ? "Enviando..." : "Enviar Correo de Recuperación"}
           </Button>
 
           <button
             type="button"
             onClick={() => {
-              setView('login');
-              setErrorMsg('');
-              setSuccessMsg('');
+              setView("login");
+              setErrorMsg("");
+              setSuccessMsg("");
             }}
             className="text-xs font-bold text-muted-foreground hover:text-foreground flex items-center justify-center gap-1 mx-auto mt-2 cursor-pointer"
           >
@@ -244,20 +250,21 @@ export function Login({ onLoginSuccess }: LoginProps) {
           onClick={installApp}
           className="w-full text-xs font-bold text-secondary hover:underline flex items-center justify-center gap-1.5 mt-4 cursor-pointer"
         >
-          <Download className="w-3.5 h-3.5 animate-pulse" /> Instalar aplicación en este dispositivo
+          <Download className="w-3.5 h-3.5 animate-pulse" /> Instalar aplicación
+          en este dispositivo
         </button>
       )}
 
       {/* Info en Recuperación */}
-      {view === 'forgot' && (
+      {view === "forgot" && (
         <div className="mt-6 flex items-start gap-2 text-[10px] text-muted-foreground bg-muted/40 p-3 rounded-md border border-border/30">
           <Info className="w-4 h-4 text-primary shrink-0" />
           <span>
-            En local, Resend imprimirá el enlace de recuperación con el token generado directamente en la consola del servidor Next.js.
+            En local, Resend imprimirá el enlace de recuperación con el token
+            generado directamente en la consola del servidor Next.js.
           </span>
         </div>
       )}
-      
     </div>
   );
 }
