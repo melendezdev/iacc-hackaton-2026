@@ -3,8 +3,33 @@ import { OpenAI, toFile } from 'openai';
 
 export const dynamic = 'force-dynamic';
 
+// Bandera para simular la IA localmente y guardar créditos de OpenAI durante la grabación del video demo.
+// Cambiar a 'false' para el despliegue de presentación en vivo del proyecto final.
+const MOCK_AI = true;
+
 export async function POST(req: NextRequest) {
   try {
+    // Si la simulación está activa, devolvemos el resultado instantáneo alineado con la pauta de grabación
+    if (MOCK_AI) {
+      // Simular latencia de red de 2 segundos para dar realismo a la animación de carga
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const transcriptionText = "El objetivo de la sesión de hoy fue evaluar la adherencia al tratamiento farmacológico y abordar la ansiedad del paciente ante la reinserción social. Durante el desarrollo, conversamos sobre técnicas de relajación que aplicó al enfrentar entrevistas laborales. Acordamos que asistirá al taller laboral el martes. Como acciones, se coordinará una llamada con el tutor técnico. En observaciones, se muestra entusiasmado y adherente.";
+
+      const structuredData = {
+        objetivo: "Evaluar la adherencia al tratamiento farmacológico y abordar la ansiedad del paciente ante la reinserción social.",
+        desarrollo: "Durante la sesión, se revisaron las herramientas emocionales y el paciente refirió haber aplicado con éxito técnicas de relajación diafragmática para modular la ansiedad ante procesos de selección.",
+        acuerdos: "El paciente se compromete a asistir al taller de inserción laboral programado para el día martes.",
+        acciones: "Coordinar llamada telefónica con el tutor técnico del taller para el seguimiento de la vacante laboral.",
+        observaciones: "Paciente se muestra eutímico, con buen nivel de adherencia al tratamiento y motivado frente a los pasos terapéuticos acordados."
+      };
+
+      return NextResponse.json({
+        transcription: transcriptionText,
+        structuredData: structuredData,
+      });
+    }
+
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
